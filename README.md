@@ -2,7 +2,7 @@
 
 # flow
 
-Flow is an attempt to implement the [OPC UA Pub Sub Spec, Part 14](https://opcfoundation.org/developer-tools/specifications-unified-architecture/part-14-pubsub)
+Flow is an attempt to implement a client for the [OPC UA PubSub Spec Part 14](https://opcfoundation.org/developer-tools/specifications-unified-architecture/part-14-pubsub)
 
 ## Getting Started
 
