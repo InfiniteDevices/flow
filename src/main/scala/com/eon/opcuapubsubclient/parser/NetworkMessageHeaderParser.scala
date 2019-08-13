@@ -7,27 +7,6 @@ import scodec.bits.{BitVector, ByteVector}
 
 
 object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(NetworkMessageHeader, ParsePosition)]) {
-/*
-  object FuncA extends (String => Int => V[String]) {
-    override def apply(str: String): ParsePosition => V[String] = i => {
-     validated ((str.toInt + i).toString )
-    }
-  }
-
-  object FuncB extends (String => V[Int]) {
-    override def apply(str: String): V[Int] = {
-      Right(str.toInt)
-    }
-  }
-
-  val sdsdsd = FuncA("1")(1)
-
-  for {
-    funcAStr <- FuncA("1")(1)
-    funcBStr <- FuncB(funcAStr)
-  } yield {
-    println(s"Final String incremented as int is $funcBStr")
-  } */
 
   override def apply(v1: ByteVector): ParsePosition => V[(NetworkMessageHeader, ParsePosition)] =
     parsePosition => validated { parseNetworkMessageHeader(v1, parsePosition) }
