@@ -21,8 +21,8 @@ object Bootstrap extends App  {
   implicit val executionContext: ExecutionContext = system.dispatcher
 
   // 3. routes configurations
-  //val userRegistryActor: ActorRef = system.actorOf(UserRegistryActor.props, "userRegistryActor")
-  //lazy val routes: Route = userRoutes
+  //val todoActor: ActorRef = system.actorOf(TodoActor.props, "todoActor")
+  //lazy val routes: Route = todoRoutes
 
   // 4. http-server
   val serverBinding: Future[Http.ServerBinding] =
