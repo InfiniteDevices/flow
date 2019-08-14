@@ -7,6 +7,7 @@ import com.eon.opcuapubsubclient.config.OpcUAPubSubConfig
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{ExtendedFlags1, ExtendedFlags2, NetworkMessageHeader, NetworkMessageTypes, PublisherIDTypes}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParserActor.Message._
 import scodec.bits.{BitVector, ByteVector}
+import scodec.codecs._
 
 
 class OpcUAPubSubParserActor(cfg: OpcUAPubSubConfig) extends Actor {
@@ -68,6 +69,9 @@ class OpcUAPubSubParserActor(cfg: OpcUAPubSubConfig) extends Actor {
       // Using the scodec libary to parse
       val byteVector = ByteVector(bytes)
       self ! NetworkMessageHeaderMessage(byteVector, 0)
+
+      case class Message(version: Int, publisherIdEnabled: Boolean, groupHeaderEnabled: Boolean, payloadHeaderEnabled: Boolean, extendedFlags1Enabled: Boolean)
+      val codec = (uint4 :: bool :: bool :: bool :: bool).as[Message]
     }
 
     case NetworkMessageHeaderMessage(byteVector, position) => {

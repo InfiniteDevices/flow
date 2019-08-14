@@ -27,12 +27,7 @@ object StructureDescriptionParser extends (ByteVector => Int => ParsePosition =>
     val (dataTypeId, pos1) = NodeIdParser(byteVector)(pos)
 
     // 2. Populate the QualifiedName
-    val (qName, pos2) = {
-      val (nsIndex, nPos1) = (byteVector.slice(from = pos1, until = pos1 + 2).toInt(signed = false, ordering = LittleEndian), pos1 + 2)
-      val (strLength, nPos2) = (ParserUtils.sliceToUInt(byteVector, nPos1, nPos1 + 4), nPos1 + 4)
-      val (qNameStr, nPos3) = (ParserUtils.parseString(byteVector, nPos2, size = strLength), nPos2 + strLength)
-      (QualifiedName(nsIndex, qNameStr), nPos3)
-    }
+    val (qName, pos2) = ParserUtils.parseQualifiedName(byteVector, pos1)
 
     // 3. Populate the DefaultEncodingId which is of type NodeId
     val (defaultEncodingId, pos3) = NodeIdParser(byteVector)(pos2)

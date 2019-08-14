@@ -277,15 +277,22 @@ object OpcUAPubSubTypes {
   case class FieldMetaData(
     name: String,
     description: LocalizedText,
-    promotedField: Boolean,
+    optionSet: OptionSet,
     builtInType: Int,
     dataType: NodeId,
     valueRank: Int,
     arrayDimensions: Int,
     maxStringLength: Int,
     dataSetFieldId: UUID,
-    properties: Map[QualifiedName, String] // TODO: Value is of type Variant! Check this!
+    properties: Vector[(QualifiedName, Variant)]
   )
+
+  case class OptionSet(
+    value: Vector[Byte],
+    validBits: Vector[Byte]
+  )
+
+  case class Variant(any: Any)
 
   // ******************************************* DataSetMetaData **************************************************** //
 

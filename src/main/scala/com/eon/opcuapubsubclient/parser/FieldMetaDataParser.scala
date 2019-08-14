@@ -1,6 +1,6 @@
 package com.eon.opcuapubsubclient.parser
 
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.FieldMetaData
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{FieldMetaData, QualifiedName}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 
@@ -21,18 +21,31 @@ object FieldMetaDataParser extends (ByteVector => Int => ParsePosition => (Vecto
 
         val (description, pos2) = ParserUtils.parseLocalizedText(byteVector, pos1)
 
-        // TODO: FieldFlags
+        // FieldFlags
+        val (optionSet, pos3) = OptionSetParser(byteVector)(pos2)
 
-        val (builtInType, pos4) = (ParserUtils.sliceToUInt(byteVector, pos2, pos2 + 1), pos2 + 1)
-        val (valueRank, pos5) = (ParserUtils.sliceToInt(byteVector, pos4, pos4 + 4), pos4 + 4)
-        val (arrayDimensions, pos6) = (ParserUtils.sliceToUInt(byteVector, pos2, pos2 + 1), pos2 + 1)
-
-        //val (maxStringLength, pos7) = (ParserUtils.sliceToUInt(byteVector, pos6, pos6 + 4), pos6 + 4)
-        //val (dataSetFieldId, pos8) = (ParserUtils.parseGuid(byteVector, pos7), pos7 + 16)
+        val (builtInType, pos4) = (ParserUtils.sliceToUInt(byteVector, pos3, pos3 + 1), pos3 + 1)
+        val (dataType, pos5) = NodeIdParser(byteVector)(pos4)
+        val (valueRank, pos6) = (ParserUtils.sliceToUInt(byteVector, pos5, pos5 + 4), pos5 + 4)
+        // TODO: ArrayDimensions is of type Array[UInt32]... what we do here is wrong!!!
+        val (arrayDimensions, pos7) = (ParserUtils.sliceToUInt(byteVector, pos6, pos6 + 4), pos6 + 4)
+        val (maxStringLength, pos8) = (ParserUtils.sliceToUInt(byteVector, pos7, pos7 + 4), pos7 + 4)
+        val (dataSetFieldId, pos9) = (ParserUtils.parseGuid(byteVector, pos8), pos8 + 16)
 
         // TODO... rest of the fields!
+        val (keyValuePairLength, pos10) = (ParserUtils.sliceToUInt(byteVector, pos9, pos9 + 4), pos9 + 4)
+
+
+        println(keyValuePairLength)
 
         fieldMetaData(size - 1, pos, acc)
+      } else (acc, pos)
+    }
+
+    def qualifiedNames(size: Int, pos: ParsePosition, acc: Vector[QualifiedName]): (Vector[QualifiedName], ParsePosition) = {
+      if (size > 0) {
+        val (qName, nPos) = ParserUtils.parseQualifiedName(byteVector, pos)
+        qualifiedNames(size - 1, nPos, acc :+ qName)
       } else (acc, pos)
     }
 

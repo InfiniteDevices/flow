@@ -26,6 +26,8 @@ object DataSetMetaDataParser extends (ByteVector => ParsePosition => V[(Int, Par
     // 4. Parse the size if the Fields array (Array length is encoded as Int32 or 4 bytes)
     val (fieldMetaDataSize, pos5) = (ParserUtils.sliceToInt(byteVector, pos4, pos4 + 4), pos4 + 4)
 
+    val (fieldMetaDataVector, pos6) = FieldMetaDataParser(byteVector)(fieldMetaDataSize)(pos5)
+
     // TODO: Bug free until here!
 
     //val (fields, pos5) = FieldMetaDataParser(byteVector)(fieldMetaDataSize)(pos5)
