@@ -49,7 +49,7 @@ object StructureDescriptionParser extends (ByteVector => Int => ParsePosition =>
 
       // OPC UA Spec version 1.04, Part 3, Page 69, Table 36 StructureField Structure
       def parseStructureField(byteVector: ByteVector, pos: ParsePosition): (StructureField, ParsePosition) = {
-        val (name, pos1) = ParserUtils.parseStringWithPosition(byteVector, pos)
+        val (name, pos1) = ParserUtils.toString(byteVector, pos)
         val (description, pos2) = ParserUtils.parseLocalizedText(byteVector, pos1)
         val (dataType, pos3) = NodeIdParser(byteVector)(pos2)
         // ValueRank is of type Int32 or 4 bytes long

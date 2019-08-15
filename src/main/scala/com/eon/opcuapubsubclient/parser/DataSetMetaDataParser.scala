@@ -20,7 +20,7 @@ object DataSetMetaDataParser extends (ByteVector => ParsePosition => V[(Int, Par
     val (schemaHeader, pos2) = DataTypeSchemaHeaderParser(byteVector)(pos1)
 
     // 3. Parse the name and description
-    val (name, pos3) = ParserUtils.parseStringWithPosition(byteVector, pos2)
+    val (name, pos3) = ParserUtils.toString(byteVector, pos2)
     val (description, pos4) = ParserUtils.parseLocalizedText(byteVector, pos3)
 
     // 4. Parse the size if the Fields array (Array length is encoded as Int32 or 4 bytes)

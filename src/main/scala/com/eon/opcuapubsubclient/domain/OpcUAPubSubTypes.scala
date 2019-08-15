@@ -292,7 +292,7 @@ object OpcUAPubSubTypes {
     validBits: Vector[Byte]
   )
 
-  case class Variant(any: Any)
+  case class Variant(any: BuiltInType)
 
   // ******************************************* DataSetMetaData **************************************************** //
 
@@ -329,4 +329,65 @@ object OpcUAPubSubTypes {
   )
 
   // ******************************************* DataSetMessage  **************************************************** //
+
+  // ******************************************* BuiltInTypes  ****************************************************** //
+
+  sealed trait BuiltInType
+  object BuiltInType {
+    case object BooleanType extends BuiltInType
+    case object ByteType    extends BuiltInType
+    case object UByteType   extends BuiltInType
+    case object Int16Type   extends BuiltInType
+    case object UInt16Type  extends BuiltInType
+    case object Int32Type   extends BuiltInType
+    case object UInt32Type  extends BuiltInType
+    case object Int64Type   extends BuiltInType
+    case object UInt64Type  extends BuiltInType
+    case object FloatType   extends BuiltInType
+    case object DoubleType  extends BuiltInType
+    case object StringType  extends BuiltInType
+    case object DateTimeType extends BuiltInType
+    case object GuidType     extends BuiltInType
+    case object ByteStringType extends BuiltInType
+    case object XmlElementType extends BuiltInType
+    case object NodeIdType     extends BuiltInType
+    case object ExpandedNodeIdType extends BuiltInType
+    case object StatusCodeType     extends BuiltInType
+    case object QualifiedNameType  extends BuiltInType
+    case object LocalizedTextType  extends BuiltInType
+    case object ExtensionObjectType extends BuiltInType
+    case object DataValueType       extends BuiltInType
+    case object VariantType         extends BuiltInType
+    case object DiagnosticInfoType  extends BuiltInType
+    case object ZombieType          extends BuiltInType
+
+    val builtInTypes: Map[Int, BuiltInType] = Map(
+      0 -> ZombieType,
+      1 -> ByteType,
+      2 -> UByteType,
+      3 -> Int16Type,
+      4 -> UInt16Type,
+      5 -> Int32Type,
+      6 -> UInt32Type,
+      7 -> Int64Type,
+      8 -> UInt64Type,
+      10 -> FloatType,
+      11 -> DoubleType,
+      12 -> DateTimeType,
+      13 -> GuidType,
+      14 -> ByteStringType,
+      15 -> XmlElementType,
+      16 -> NodeIdType,
+      17 -> ExpandedNodeIdType,
+      18 -> StatusCodeType,
+      19 -> QualifiedNameType,
+      20 -> LocalizedTextType,
+      21 -> ExtensionObjectType,
+      22 -> DataValueType,
+      23 -> VariantType,
+      24 -> BooleanType,
+      25 -> DiagnosticInfoType
+    )
+  }
+  // ******************************************* BuiltInTypes  ****************************************************** //
 }

@@ -8,7 +8,7 @@ import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteOrdering.{BigEndian, LittleEndian}
 import scodec.bits.ByteVector
 
-
+// FIXME: See this this implementation could be simplified and moved into ParserUtils!
 object NodeIdParser extends (ByteVector => ParsePosition => (NodeId, ParsePosition)) {
 
   override def apply(byteVector: ByteVector): ParsePosition => (NodeId, ParsePosition) = parsePosition => {
@@ -64,10 +64,10 @@ object NodeIdParser extends (ByteVector => ParsePosition => (NodeId, ParsePositi
         case 0x04 => // GUID: See OPC UA Spec version 1.04, Part 6, Page 11, Figure 5
           (NodeId(
             namespaceIndex = defaultNsIndex,
-            NodeIdIdentifier.GuidIdentifier(value = readGuid(byteVector, pos1))
+            NodeIdIdentifier.GuidIdentifier(value = ParserUtils.parseGuid(byteVector, pos1))
           ), nsIndexPos + 16) // GUID is always 16 bytes long as defined in the Spec!
         case 0x05 => // Opaque (ByteString) or can be treated as a Vector[Byte]
-          val (byteStr, pos1) = readByteString(byteVector, nsIndexPos)
+          val (byteStr, pos1) = ParserUtils.parseByteString(byteVector, nsIndexPos)
           (NodeId(
             namespaceIndex = defaultNsIndex,
             NodeIdIdentifier.OpaqueIdentifier(value = byteStr)
@@ -82,23 +82,5 @@ object NodeIdParser extends (ByteVector => ParsePosition => (NodeId, ParsePositi
 
     // 2. Populate the NodeId based on the encoding Byte
     nodeId(encodingByte, pos1)
-  }
-
-  // TODO: Check what happens for EncodingLimits exceeds
-  def readByteString(byteVector: ByteVector, pos: ParsePosition): (Vector[Byte], ParsePosition) = {
-    val (length, pos1) = (byteVector.slice(from = pos, until = pos + 4).toInt(signed = false, ordering = LittleEndian), pos + 4) // 4 bytes
-    if (length == -1) (Vector.empty, pos1)
-    // TODO FIXME: else if (length > encodingLimits.getMaxArrayLength) throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded, String.format("max array length exceeded (length=%s, max=%s)", length, encodingLimits.getMaxArrayLength))
-    else (byteVector.slice(from = pos1, until = pos1 + length).toSeq.toVector, pos1 + length)
-  }
-
-  def readGuid(byteVector: ByteVector, pos: ParsePosition): UUID = {
-    val (part1, pos1) = (byteVector.slice(from = pos, until = pos + 4).toInt(signed = false, ordering = LittleEndian), pos + 4) // 4 bytes
-    println(part1)
-    val (part2, pos2) = (byteVector.slice(from = pos1, until = pos1 + 2).toShort(signed = false, ordering = LittleEndian), pos1 + 2) // 2 bytes
-    val (part3, pos3) = (byteVector.slice(from = pos2, until = pos2 + 2).toShort(signed = false, ordering = LittleEndian), pos2 + 2) // 2 bytes
-    val (part4, _) = (byteVector.slice(from = pos3, until = pos3 + 8).toLong(signed = false, ordering = BigEndian), pos3 + 8) // 8 bytes intentionally Big Endian
-    val msb = (part1 << 32) | (part2 << 16) | part3
-    new UUID(msb, part4)
   }
 }
