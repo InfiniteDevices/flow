@@ -332,62 +332,35 @@ object OpcUAPubSubTypes {
 
   // ******************************************* BuiltInTypes  ****************************************************** //
 
-  sealed trait BuiltInType
+  sealed trait BuiltInType { def id: Int }
   object BuiltInType {
-    case object BooleanType extends BuiltInType
-    case object ByteType    extends BuiltInType
-    case object UByteType   extends BuiltInType
-    case object Int16Type   extends BuiltInType
-    case object UInt16Type  extends BuiltInType
-    case object Int32Type   extends BuiltInType
-    case object UInt32Type  extends BuiltInType
-    case object Int64Type   extends BuiltInType
-    case object UInt64Type  extends BuiltInType
-    case object FloatType   extends BuiltInType
-    case object DoubleType  extends BuiltInType
-    case object StringType  extends BuiltInType
-    case object DateTimeType extends BuiltInType
-    case object GuidType     extends BuiltInType
-    case object ByteStringType extends BuiltInType
-    case object XmlElementType extends BuiltInType
-    case object NodeIdType     extends BuiltInType
-    case object ExpandedNodeIdType extends BuiltInType
-    case object StatusCodeType     extends BuiltInType
-    case object QualifiedNameType  extends BuiltInType
-    case object LocalizedTextType  extends BuiltInType
-    case object ExtensionObjectType extends BuiltInType
-    case object DataValueType       extends BuiltInType
-    case object VariantType         extends BuiltInType
-    case object DiagnosticInfoType  extends BuiltInType
-    case object ZombieType          extends BuiltInType
+    case class ZombieType          (a: String,        id: Int = 0) extends BuiltInType
+    case class BooleanType         (a: Boolean,       id: Int = 1) extends BuiltInType
+    case class ByteType            (a: Byte,          id: Int = 2) extends BuiltInType
+    case class UByteType           (a: Byte,          id: Int = 3) extends BuiltInType
+    case class Int16Type           (a: Int,           id: Int = 4) extends BuiltInType
+    case class UInt16Type          (a: Int,           id: Int = 5) extends BuiltInType
+    case class Int32Type           (a: Int,           id: Int = 6) extends BuiltInType
+    case class UInt32Type          (a: Int,           id: Int = 7) extends BuiltInType
+    case class Int64Type           (a: Long,          id: Int = 8) extends BuiltInType
+    case class UInt64Type          (a: Long,          id: Int = 9) extends BuiltInType
+    case class FloatType           (a: Float,         id: Int = 10) extends BuiltInType
+    case class DoubleType          (a: Double,        id: Int = 11) extends BuiltInType
+    case class StringType          (a: String,        id: Int = 12) extends BuiltInType
+    case class DateTimeType        (a: Long,          id: Int = 13) extends BuiltInType // FIXME: Wrong type used, fix it later
+    case class GuidType            (a: UUID,          id: Int = 14) extends BuiltInType
+    case class ByteStringType      (a: Vector[Byte],  id: Int = 15) extends BuiltInType
+    case class XmlElementType      (a: String,        id: Int = 16) extends BuiltInType
+    case class NodeIdType          (a: NodeId,        id: Int = 17) extends BuiltInType
+    case class ExpandedNodeIdType  (a: NodeId,        id: Int = 18) extends BuiltInType // FIXME: Wrong type used, fix it later
+    case class StatusCodeType      (a: Int,           id: Int = 19) extends BuiltInType
+    case class QualifiedNameType   (a: QualifiedName, id: Int = 20) extends BuiltInType
+    case class LocalizedTextType   (a: LocalizedText, id: Int = 21) extends BuiltInType
+    case class ExtensionObjectType (a: String,        id: Int = 22) extends BuiltInType // FIXME: Wrong type used, fix it later
+    case class DataValueType       (a: String,        id: Int = 23) extends BuiltInType // FIXME: Wrong type used, fix it later
+    case class VariantType         (a: Variant,       id: Int = 24) extends BuiltInType
+    case class DiagnosticInfoType  (a: String,        id: Int = 25) extends BuiltInType // FIXME: Wrong type used, fix it later
 
-    val builtInTypes: Map[Int, BuiltInType] = Map(
-      0 -> ZombieType,
-      1 -> ByteType,
-      2 -> UByteType,
-      3 -> Int16Type,
-      4 -> UInt16Type,
-      5 -> Int32Type,
-      6 -> UInt32Type,
-      7 -> Int64Type,
-      8 -> UInt64Type,
-      10 -> FloatType,
-      11 -> DoubleType,
-      12 -> DateTimeType,
-      13 -> GuidType,
-      14 -> ByteStringType,
-      15 -> XmlElementType,
-      16 -> NodeIdType,
-      17 -> ExpandedNodeIdType,
-      18 -> StatusCodeType,
-      19 -> QualifiedNameType,
-      20 -> LocalizedTextType,
-      21 -> ExtensionObjectType,
-      22 -> DataValueType,
-      23 -> VariantType,
-      24 -> BooleanType,
-      25 -> DiagnosticInfoType
-    )
   }
   // ******************************************* BuiltInTypes  ****************************************************** //
 }
