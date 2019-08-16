@@ -93,7 +93,7 @@ object ParserUtils {
   }
 
   def parseXmlElement(byteVector: ByteVector, from: ParsePosition): (String, ParsePosition) = {
-    val (byteString, pos1) = parseByteString(byteString, from)
+    val (byteString, pos1) = parseByteString(byteVector, from)
     (new String(byteString.toArray, StandardCharsets.UTF_8), pos1)
   }
 
@@ -155,7 +155,7 @@ object ParserUtils {
     * @param parsePosition The starting position in the ByteVector from where the parsing should happen
     * @return
     */
-  def parseVariant(byteVector: ByteVector, parsePosition: ParsePosition): (Variant, ParsePosition) = {
+ /* def parseVariant(byteVector: ByteVector, parsePosition: ParsePosition): (Variant, ParsePosition) = {
     val (encodingMask, pos1) = (ParserUtils.sliceToUInt(byteVector, from = parsePosition, until = parsePosition + 1), parsePosition + 1)
     val buildInTypeId = encodingMask & 0x3F
     val dimensionsEncoded = (encodingMask & 0x40) == 0x40
@@ -189,7 +189,7 @@ object ParserUtils {
         }
       }
     }
-  }
+  } */
 
   // TODO: Implement
   def parseDiagnosticInfo(byteVector: ByteVector, from: ParsePosition): (String, ParsePosition) = ("", 0)
@@ -269,9 +269,9 @@ object ParserUtils {
     case 23 =>
       val (dataValue, pos) = parseDataValue(byteVector, from)
       (DataValueType(dataValue, builtInTypeId), pos)
-    case 25 =>
+    /*case 25 =>
       val (variant, pos) = parseVariant(byteVector, from)
-      (VariantType(variant, builtInTypeId), pos)
+      (VariantType(variant, builtInTypeId), pos) */
     case 25 =>
       val (diagInfo, pos) = parseDiagnosticInfo(byteVector, from)
       (DiagnosticInfoType(diagInfo, builtInTypeId), pos)

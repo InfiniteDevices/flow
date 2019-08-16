@@ -17,7 +17,7 @@ object FieldMetaDataParser extends (ByteVector => Int => ParsePosition => (Vecto
     @tailrec
     def fieldMetaData(size: Int, pos: ParsePosition, acc: Vector[FieldMetaData]): (Vector[FieldMetaData], ParsePosition) = {
       if (size > 0) {
-        val (name, pos1) = ParserUtils.toString(byteVector, parsePosition)
+        val (name, pos1) = ParserUtils.parseString(byteVector, parsePosition)
 
         val (description, pos2) = ParserUtils.parseLocalizedText(byteVector, pos1)
 
