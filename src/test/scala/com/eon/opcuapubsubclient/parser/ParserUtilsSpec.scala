@@ -6,6 +6,8 @@ import java.util
 import com.eon.opcuapubsubclient.UnitSpec
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.BuiltInType
 
+
+// TODO: Rewrite this class with tests! This is just to see how we can parse Variant data
 class ParserUtilsSpec extends UnitSpec {
 
   def unflatten(arr: Vector[Int], dimensions: Vector[Int], offset: Int): Object = {
@@ -63,8 +65,8 @@ class ParserUtilsSpec extends UnitSpec {
   "dummy test" should "do dummy things" in {
 
     case class Elem(elems: Vector[Elem])
-    val dimensions = Array(2,2,2)
-    val elems = Array(0,1,2,3,4,5,6,7)
+    val dimensions = Array(2,2,2,3)
+    val elems = Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23)
 
     val result = unflatten(elems.toVector, dimensions.toVector)
     println(result)

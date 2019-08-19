@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets
 import java.util.UUID
 
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.BuiltInType._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{BuiltInType, LocalizedText, NodeId, QualifiedName, Variant}
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{BuiltInType, HigherOrder, LocalizedText, NodeId, QualifiedName, SimpleOrder, Variant, VariantData}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteOrdering.{BigEndian, LittleEndian}
 import scodec.bits.ByteVector
@@ -155,41 +155,55 @@ object ParserUtils {
     * @param parsePosition The starting position in the ByteVector from where the parsing should happen
     * @return
     */
- /* def parseVariant(byteVector: ByteVector, parsePosition: ParsePosition): (Variant, ParsePosition) = {
+  def parseVariant(byteVector: ByteVector, parsePosition: ParsePosition): (Variant, ParsePosition) = {
     val (encodingMask, pos1) = (ParserUtils.sliceToUInt(byteVector, from = parsePosition, until = parsePosition + 1), parsePosition + 1)
     val buildInTypeId = encodingMask & 0x3F
-    val dimensionsEncoded = (encodingMask & 0x40) == 0x40
-    val arrayEncoded = (encodingMask & 0x80) == 0x80
 
-    if (buildInTypeId == 0) {
-      Variant(ZombieType(""))
-    } else {
-      if (arrayEncoded) {
-        val (arrLength, pos2) = parseInt32(byteVector, pos1)
-        if (arrLength == -1) {
-          Variant(ZombieType(""))
-        } else { // TODO: This does not work., we need a recursive solution to capture the position variable
-
-          @tailrec
-          def builtInTypes(size: Int, pos: ParsePosition, acc: Vector[BuiltInType] = Vector.empty): (Vector[BuiltInType], ParsePosition) = {
-            if (size < 0) (acc, pos)
-            else {
-              val (builtInType, newPos) = parseBuiltInType(byteVector, buildInTypeId, pos2)
-              builtInTypes(size - 1, newPos, acc :+ builtInType)
-            }
-          }
-
-          val (builtInTypeSeq, pos3) = builtInTypes(arrLength, pos2)
-          val (dimensions, pos4) = {
-            if (dimensionsEncoded) parseArrayDimensions(byteVector, pos3)
-            else (Vector.empty, pos3)
-          }
-          if(dimensions.length > 1) ArrayUtil.unflatten(flatArray, dimensions)
-          else builtInTypeSeq
-        }
+    def unflatten(flat: Vector[BuiltInType], dims: Vector[Int]): VariantData = {
+      if (dims.length <= 1) {
+        SimpleOrder(flat)
+      } else {
+        val (Vector(dim), rest) = dims.splitAt(1)
+        val subs = flat.grouped(flat.length/dim).map(a => unflatten(a, rest)).toVector
+        HigherOrder(subs)
       }
     }
-  } */
+
+    @tailrec
+    def builtInTypes(size: Int, pos: ParsePosition, acc: Vector[BuiltInType] = Vector.empty): (Vector[BuiltInType], ParsePosition) = {
+      if (size < 0) (acc, pos)
+      else {
+        val (builtInType, newPos) = parseBuiltInType(byteVector, buildInTypeId, pos)
+        builtInTypes(size - 1, newPos, acc :+ builtInType)
+      }
+    }
+
+    if (encodingMask == 0) {
+      (Variant(SimpleOrder(Vector(ZombieType("")))), pos1)
+    } else {
+      val dimensionsEncoded = (encodingMask & 0x40) == 0x40
+      val arrayEncoded = (encodingMask & 0x80) == 0x80
+      if (arrayEncoded) {
+        val (arrLength, pos2) = parseInt32(byteVector, pos1)
+        val (builtInTypeVector, pos3) = builtInTypes(arrLength, pos2)
+
+        // Now check if the array has dimensions. Array dimensions are themselves encoded as an array of Int32
+        val (dimensions, pos4) = {
+          if (dimensionsEncoded) parseArrayDimensions(byteVector, pos3)
+          else (Vector.empty, pos3)
+        }
+
+        if (dimensions.length > 1) {
+          (Variant(unflatten(builtInTypeVector, dimensions)), pos4)
+        } else {
+          (Variant(SimpleOrder(builtInTypeVector)), pos4)
+        }
+      } else {
+        val (builtInType, nPos) = parseBuiltInType(byteVector, buildInTypeId, pos1)
+        (Variant(SimpleOrder(Vector(builtInType))), nPos)
+      }
+    }
+  }
 
   // TODO: Implement
   def parseDiagnosticInfo(byteVector: ByteVector, from: ParsePosition): (String, ParsePosition) = ("", 0)

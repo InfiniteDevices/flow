@@ -292,7 +292,11 @@ object OpcUAPubSubTypes {
     validBits: Vector[Byte]
   )
 
-  case class Variant(any: BuiltInType)
+  sealed trait VariantData
+  case class SimpleOrder(rows: Vector[BuiltInType]) extends VariantData
+  case class HigherOrder(matrices: Vector[VariantData]) extends VariantData
+
+  case class Variant(data: VariantData)
 
   // ******************************************* DataSetMetaData **************************************************** //
 
