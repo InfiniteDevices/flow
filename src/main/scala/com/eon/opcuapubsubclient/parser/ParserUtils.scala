@@ -378,7 +378,14 @@ object ParserUtils {
         parseKeyValueProperty(size - 1, pos2, acc :+ kvProp)
       }
     }
+
     val (keyValuePropSize, pos1) = ParserUtils.parseUInt32(byteVector, from)
     parseKeyValueProperty(keyValuePropSize, pos1, Vector.empty)
+  }
+
+  def parseConfigVersion(byteVector: ByteVector, from: ParsePosition): (ConfigVersion, ParsePosition) = {
+    val (majorVersion, pos1) = parseUInt32(byteVector, from)
+    val (minorVersion, pos2) = parseUInt32(byteVector, pos1)
+    (ConfigVersion(majorVersion, minorVersion), pos2)
   }
 }

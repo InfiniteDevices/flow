@@ -24,23 +24,20 @@ object DataSetMetaDataParser extends (ByteVector => ParsePosition => V[(Int, Par
 
     // 4. Parse the size if the Fields array (Array length is encoded as Int32 or 4 bytes)
     val (fieldMetaDataSize, pos5) = ParserUtils.parseUInt32(byteVector, pos4)
+    val (fieldMetaData, pos6) = FieldMetaDataParser(byteVector)(fieldMetaDataSize)(pos5)
 
-    val (fieldMetaDataVector, pos6) = FieldMetaDataParser(byteVector)(fieldMetaDataSize)(pos5)
+    val (dataSetClassId, pos7) = ParserUtils.parseGuid(byteVector, pos6) // TODO: GUID is wrong Fix it!
+    val (configVersion, pos8) = ParserUtils.parseConfigVersion(byteVector, pos7)
+    val (status, pos9) = ParserUtils.parseStatusCode(byteVector, pos8)
 
-    // TODO: Bug free until here!
-
-    //val (fields, pos5) = FieldMetaDataParser(byteVector)(fieldMetaDataSize)(pos5)
-    //val (dataSetClassId, pos6) = (ParserUtils.parseGuid(byteVector, pos5), pos5+ 16)
-    //val (configVersion, pos7) = ParseConfigVersion(.... TODO ....)
-    /*
-    (DataSetMetaData(
+    /*(DataSetMetaData(
       schemaHeader,
       name,
       description,
-      fields,
+      fieldMetaData,
       dataSetClassId,
       configVersion
-    ), pos7) */
+    ), pos9) */
 
     // TODO
     (pos1, pos1)

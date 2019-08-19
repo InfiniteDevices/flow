@@ -12,12 +12,12 @@ object FieldMetaDataParser extends (ByteVector => Int => ParsePosition => (Vecto
   override def apply(byteVector: ByteVector): Int => ParsePosition => (Vector[FieldMetaData], ParsePosition) =
     size => parsePosition => parseFieldMetaData(byteVector, size, parsePosition)
 
-  def parseFieldMetaData(byteVector: ByteVector, size: Int, parsePosition: ParsePosition): (Vector[FieldMetaData], ParsePosition) = {
+  def parseFieldMetaData(byteVector: ByteVector, size: Int, from: ParsePosition): (Vector[FieldMetaData], ParsePosition) = {
 
     @tailrec
     def fieldMetaData(size: Int, pos: ParsePosition, acc: Vector[FieldMetaData]): (Vector[FieldMetaData], ParsePosition) = {
       if (size > 0) {
-        val (name, pos1) = ParserUtils.parseString(byteVector, parsePosition)
+        val (name, pos1) = ParserUtils.parseString(byteVector, pos)
 
         val (description, pos2) = ParserUtils.parseLocalizedText(byteVector, pos1)
 
@@ -37,7 +37,7 @@ object FieldMetaDataParser extends (ByteVector => Int => ParsePosition => (Vecto
 
         // TODO... rest of the fields!
 
-        val fieldMetaData = FieldMetaData(
+        val data = FieldMetaData(
           name,
           description,
           optionSet,
@@ -50,17 +50,17 @@ object FieldMetaDataParser extends (ByteVector => Int => ParsePosition => (Vecto
           kvProperties
         )
 
-        fieldMetaData(size - 1, pos10, acc :+ fieldMetaData)
+        fieldMetaData(size - 1, pos10, acc :+ data)
       } else (acc, pos)
     }
-
+/*
     def qualifiedNames(size: Int, pos: ParsePosition, acc: Vector[QualifiedName]): (Vector[QualifiedName], ParsePosition) = {
       if (size > 0) {
         val (qName, nPos) = ParserUtils.parseQualifiedName(byteVector, pos)
         qualifiedNames(size - 1, nPos, acc :+ qName)
       } else (acc, pos)
-    }
+    } */
 
-    fieldMetaData(size, parsePosition, Vector.empty)
+    fieldMetaData(size, from, Vector.empty)
   }
 }

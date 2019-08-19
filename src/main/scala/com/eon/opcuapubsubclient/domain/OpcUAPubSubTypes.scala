@@ -379,7 +379,16 @@ object OpcUAPubSubTypes {
     encodedBody: ExtensionObjectEncoding
   )
 
-  case class StatusCode(value: Long)
+  case class StatusCode(value: Long) {
+    private val severityMask = 0xC0000000L
+    private val severityGood = 0x00000000L
+    private val severityUncertain = 0x40000000L
+    private val severityBad = 0x80000000L
+
+    def isStatusGood: Boolean = (value & severityMask) == severityGood
+    def isStatusBad: Boolean = (value & severityMask) == severityBad
+    def isStatusUncertain: Boolean = (value & severityMask) == severityUncertain
+  }
 
   case class DataValue(
     value: Variant,
@@ -393,5 +402,10 @@ object OpcUAPubSubTypes {
   case class KeyValueProperty(
     qName: QualifiedName,
     value: Variant
+  )
+
+  case class ConfigVersion(
+    majorVersion: Long,
+    minorVersion: Long
   )
 }
