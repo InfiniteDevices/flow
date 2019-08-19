@@ -72,13 +72,10 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
       extendedFlags2(BitVector(byteVector(pos2)), pos2)
     else (ExtendedFlags2(), pos2)
 
-    // The PublisherId shall be omitted if bit 4 of the UADPFlags is false // TODO: Refactor this shit later!
-    val (somePublisherId, pos4): (Option[String], Int) = if (networkMsgHeader.publisherIdEnabled) { // TODO: PublisherID type check and parse accordingly!!
-      val publisherIdSize = ParserUtils.sliceToUInt(byteVector, pos3, pos3 + 4)
-      val pubId = Some(byteVector.slice(from = pos3 + 4, until = pos3 + 4 + publisherIdSize).foldLeft("")((a, b) => {
-        a + b.toChar
-      }))
-      (pubId, pos3 + 4 + publisherIdSize)
+    // The PublisherId shall be omitted if bit 4 of the UADPFlags is false
+    val (somePublisherId, pos4): (Option[String], Int) = if (networkMsgHeader.publisherIdEnabled) {
+      val (publisherId, nPos) = ParserUtils.parseString(byteVector, pos3)
+      (Some(publisherId), nPos)
     } else (None, pos3)
 
     // The DataSetClassId shall be omitted if bit 3 of the ExtendedFlags1 is false

@@ -14,6 +14,9 @@ import scala.annotation.tailrec
 
 object ParserUtils {
 
+  def slice(byteVector: ByteVector, from: ParsePosition, until: ParsePosition): ByteVector =
+    byteVector.slice(from, until)
+
   def parseBoolean(byteVector: ByteVector, from: ParsePosition): (Boolean, ParsePosition) = {
     (slice(byteVector, from, from + 1).toByte() != 0, from + 1)
   }
@@ -61,7 +64,7 @@ object ParserUtils {
   }
 
   def parseString(byteVector: ByteVector, from: ParsePosition): (String, ParsePosition) = {
-    val (strLength, pos) = (sliceToUInt(byteVector, from, from + 4), from + 4)
+    val (strLength, pos) = parseUInt32(byteVector, from)
     (parseString(byteVector, pos, strLength), pos + strLength)
   }
 
@@ -78,7 +81,7 @@ object ParserUtils {
 
   // TODO: Test if this works correctly!
   def parseGuid(byteVector: ByteVector, pos: ParsePosition): UUID = {
-    val (part1, pos1) = sliceToUIntWithPosition(byteVector, pos, pos + 4) // 4 bytes
+    val (part1, pos1) = parseUInt32(byteVector, pos) // 4 bytes
     println(part1)
     val (part2, pos2) = (byteVector.slice(from = pos1, until = pos1 + 2).toShort(signed = false, ordering = LittleEndian), pos1 + 2) // 2 bytes
     val (part3, pos3) = (byteVector.slice(from = pos2, until = pos2 + 2).toShort(signed = false, ordering = LittleEndian), pos2 + 2) // 2 bytes
@@ -119,7 +122,7 @@ object ParserUtils {
 
   def parseLocalizedText(byteVector: ByteVector, pos: ParsePosition): (LocalizedText, ParsePosition) = {
     // See OPC UA Spec Part 6, Version 1.04, page number 14 Chapter 5.2.2.14 LocalizedText
-    val (mask, pos1) = (sliceUByte(byteVector, pos), pos + 1)
+    val (mask, pos1) = parseUByte(byteVector, pos)
     if ((mask & 1) == 1) { // Contains just the Locale
       val (locale, nPos) = parseString(byteVector, pos1)
       (LocalizedText(locale = Some(locale)), nPos)
@@ -156,7 +159,7 @@ object ParserUtils {
     * @return
     */
   def parseVariant(byteVector: ByteVector, parsePosition: ParsePosition): (Variant, ParsePosition) = {
-    val (encodingMask, pos1) = (ParserUtils.sliceToUInt(byteVector, from = parsePosition, until = parsePosition + 1), parsePosition + 1)
+    val (encodingMask, pos1) = parseByte(byteVector, parsePosition)
     val buildInTypeId = encodingMask & 0x3F
 
     def unflatten(flat: Vector[BuiltInType], dims: Vector[Int]): VariantData = {
@@ -283,12 +286,12 @@ object ParserUtils {
     case 23 =>
       val (dataValue, pos) = parseDataValue(byteVector, from)
       (DataValueType(dataValue, builtInTypeId), pos)
-    /*case 25 =>
-      val (variant, pos) = parseVariant(byteVector, from)
-      (VariantType(variant, builtInTypeId), pos) */
     case 25 =>
-      val (diagInfo, pos) = parseDiagnosticInfo(byteVector, from)
-      (DiagnosticInfoType(diagInfo, builtInTypeId), pos)
+      val (variant, pos) = parseVariant(byteVector, from)
+      (VariantType(variant, builtInTypeId), pos)
+    case 25 =>
+      val (diagnosticInfo, pos) = parseDiagnosticInfo(byteVector, from)
+      (DiagnosticInfoType(diagnosticInfo, builtInTypeId), pos)
     case _ =>
       (ZombieType(""), from)
   }
@@ -307,26 +310,20 @@ object ParserUtils {
     arrayDimensions(size, pos1, Vector.empty)
   }
 
-  def slice(byteVector: ByteVector, from: ParsePosition, until: ParsePosition): ByteVector =
-    byteVector.slice(from, until)
 
-  def sliceUByte(byteVector: ByteVector, from: ParsePosition): Byte = {
-    byteVector.slice(from, from + 1).toByte(signed = false)
-  }
+  // TODO: Throw this shit away....
 
-  def sliceToUByte(byteVector: ByteVector, from: ParsePosition, until: ParsePosition): Vector[Byte] = {
-    byteVector.slice(from, until).toSeq.toVector
-  }
 
-  def sliceToUInt(byteVector: ByteVector, from: ParsePosition, until: ParsePosition): Int =
-    slice(byteVector, from, until).toInt(signed = false, ordering = LittleEndian)
+
+
 
   def sliceToInt(byteVector: ByteVector, from: ParsePosition, until: ParsePosition): Int =
     slice(byteVector, from, until).toInt(ordering = LittleEndian)
 
   // TODO: This is buggy, fix this later, do not use this now!
-  def sliceToUIntWithPosition(byteVector: ByteVector, from: ParsePosition, until: ParsePosition): (Int, ParsePosition) =
-    (sliceToUInt(byteVector, from, until), until - from)
+
+
+  // TODO:
 
   def parseKPropertiesKeyValuePairs(byteVector: ByteVector, pos: ParsePosition): (Vector[(QualifiedName, String)], ParsePosition) = ???
 }

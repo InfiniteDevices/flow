@@ -12,16 +12,16 @@ object DataTypeSchemaHeaderParser extends (ByteVector => ParsePosition => (DataT
   override def apply(byteVector: ByteVector): ParsePosition => (DataTypeSchemaHeader, ParsePosition) =
     parsePosition => parseDataTypeSchemaHeader(byteVector, parsePosition)
 
-  def parseDataTypeSchemaHeader(byteVector: ByteVector, pos: ParsePosition): (DataTypeSchemaHeader, ParsePosition) = {
+  def parseDataTypeSchemaHeader(byteVector: ByteVector, from: ParsePosition): (DataTypeSchemaHeader, ParsePosition) = {
     // 1. Get the size of the namespaces array which is of type Int32 (OPC UA Spec Part 6, Page 17, Chapter 5.2.5)
-    val (nsArraySize, pos1) = (ParserUtils.sliceToUInt(byteVector, pos, pos + 4), pos + 4)
+    val (nsArraySize, pos1) = ParserUtils.parseUInt32(byteVector, from)
 
     @tailrec
     def namespaces(size: Int, pos: ParsePosition, acc: Vector[String] = Vector.empty): (Vector[String], ParsePosition) = {
       // TODO: This parsing recursively can be refactored as a common abstraction! I'm using the same logic in StructureField parsing
       if (size > 0) {
         // Get the length of the String element and get the String element based on the length
-        val (namespaceStrSize, pos1) = (ParserUtils.sliceToUInt(byteVector, pos, pos + 4), pos + 4)
+        val (namespaceStrSize, pos1) = ParserUtils.parseUInt32(byteVector, pos)
         if (namespaceStrSize > 0) {
           val namespaceStr = ParserUtils.parseString(byteVector, pos1, size = namespaceStrSize)
           namespaces(size - 1, pos1 + namespaceStrSize, acc :+ namespaceStr)

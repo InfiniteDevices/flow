@@ -13,8 +13,7 @@ object DataSetMetaDataParser extends (ByteVector => ParsePosition => V[(Int, Par
 
   def parseDataSetMetaData(byteVector: ByteVector, parsePosition: ParsePosition): (ParsePosition, ParsePosition) = {
     // 1. Parse the DataSetWriterId
-    val (dataSetWriterId, pos1) =
-      (ParserUtils.sliceToUInt(byteVector, parsePosition, parsePosition + 2), parsePosition + 2)
+    val (dataSetWriterId, pos1) = ParserUtils.parseUInt16(byteVector, parsePosition)
 
     // 2. Parse the DataTypeSchemaHeader
     val (schemaHeader, pos2) = DataTypeSchemaHeaderParser(byteVector)(pos1)

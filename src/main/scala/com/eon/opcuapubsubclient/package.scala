@@ -21,12 +21,16 @@ package object opcuapubsubclient {
   }
 
   implicit class SequenceV[R](s: List[V[R]]) {
-
     val sequenceV: V[List[R]] = s.foldRight(Right(Nil): V[List[R]]) { (e, acc) =>
       for {
         xs <- acc.right
         x <- e.right
       } yield x :: xs
     }
+  }
+
+  implicit class BooleanToOption(val self: Boolean) extends AnyVal {
+    def toOption[A](value: => A): Option[A] =
+      if (self) Some(value) else None
   }
 }

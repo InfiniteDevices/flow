@@ -24,16 +24,16 @@ object FieldMetaDataParser extends (ByteVector => Int => ParsePosition => (Vecto
         // FieldFlags
         val (optionSet, pos3) = OptionSetParser(byteVector)(pos2)
 
-        val (builtInType, pos4) = (ParserUtils.sliceToUInt(byteVector, pos3, pos3 + 1), pos3 + 1)
+        val (builtInType, pos4) = ParserUtils.parseUByte(byteVector, pos3)
         val (dataType, pos5) = NodeIdParser(byteVector)(pos4)
-        val (valueRank, pos6) = (ParserUtils.sliceToUInt(byteVector, pos5, pos5 + 4), pos5 + 4)
+        val (valueRank, pos6) = ParserUtils.parseUInt32(byteVector, pos5)
         // TODO: ArrayDimensions is of type Array[UInt32]... what we do here is wrong!!!
-        val (arrayDimensions, pos7) = (ParserUtils.sliceToUInt(byteVector, pos6, pos6 + 4), pos6 + 4)
-        val (maxStringLength, pos8) = (ParserUtils.sliceToUInt(byteVector, pos7, pos7 + 4), pos7 + 4)
+        val (arrayDimensions, pos7) = ParserUtils.parseUInt32(byteVector, pos6)
+        val (maxStringLength, pos8) = ParserUtils.parseUInt32(byteVector, pos7)
         val (dataSetFieldId, pos9) = (ParserUtils.parseGuid(byteVector, pos8), pos8 + 16)
 
         // TODO... rest of the fields!
-        val (keyValuePairLength, pos10) = (ParserUtils.sliceToUInt(byteVector, pos9, pos9 + 4), pos9 + 4)
+        val (keyValuePairLength, pos10) = ParserUtils.parseUInt32(byteVector, pos9)
 
 
         println(keyValuePairLength)

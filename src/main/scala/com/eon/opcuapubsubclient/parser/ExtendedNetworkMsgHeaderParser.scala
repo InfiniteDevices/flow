@@ -17,7 +17,8 @@ object ExtendedNetworkMsgHeaderParser extends (ByteVector => ExtendedFlags1 => E
     } else (None, pos)
 
     val (somePicoSeconds, pos2) = if (extlags1.picoSecondsEnabled) { // PicoSeconds is UInt16
-      (Some(ParserUtils.sliceToUInt(byteVector, pos1, pos1 + 2)), pos1 + 2)
+      val (picoSeconds, nPos) = ParserUtils.parseUInt16(byteVector, pos1)
+      (Some(picoSeconds), nPos)
     } else (None, pos)
 
     val (promotedFields, pos3) = if (extFlags2.promotedFieldsEnabled) {

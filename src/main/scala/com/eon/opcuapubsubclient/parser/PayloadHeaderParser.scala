@@ -53,7 +53,7 @@ object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePos
           case 2 => DataSetMetaData
           case 3 => DataSetWriterConfig
         }, parsePosition + 1)
-        val (sequenceNumber, pos2) = (ParserUtils.sliceToUInt(byteVector, pos1, pos1 + 2), pos1 + 2)
+        val (sequenceNumber, pos2) = ParserUtils.parseUInt16(byteVector, pos1)
 
         if (discoveryResponseMsgTyp == Reserved)
           (InvalidPayloadHeader("Discovery Response Message Header cannot be of type " +

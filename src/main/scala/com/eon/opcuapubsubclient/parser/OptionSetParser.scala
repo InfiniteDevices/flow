@@ -8,12 +8,16 @@ import scodec.bits.ByteVector
 // FIXME: Implementation is not fully according to the logic! This need to be reimplemented
 object OptionSetParser extends (ByteVector => ParsePosition => (OptionSet, ParsePosition)) {
 
+  def sliceToUByte(byteVector: ByteVector, from: ParsePosition, until: ParsePosition): Vector[Byte] = {
+    byteVector.slice(from, until).toSeq.toVector
+  }
+
   // FIXME: For now I'm just reading 10 bytes from the position. This just works for the sample data!
   override def apply(byteVector: ByteVector): ParsePosition => (OptionSet, ParsePosition) = parsePosition => {
-    val (valueLength, pos1) = (ParserUtils.sliceToUInt(byteVector, parsePosition, parsePosition + 4), parsePosition + 4)
-    val (value, pos2) = (ParserUtils.sliceToUByte(byteVector, parsePosition, pos1 + valueLength), pos1 + valueLength)
-    val (validBitLength, pos3) = (ParserUtils.sliceToUInt(byteVector, pos2, pos2 + 4), pos2 + 4)
-    val (validBits, pos4) = (ParserUtils.sliceToUByte(byteVector, parsePosition, pos3 + validBitLength), pos3 + validBitLength)
+    val (valueLength, pos1) = ParserUtils.parseUInt32(byteVector, parsePosition)
+    val (value, pos2) = (sliceToUByte(byteVector, parsePosition, pos1 + valueLength), pos1 + valueLength)
+    val (validBitLength, pos3) = ParserUtils.parseUInt32(byteVector, pos2)
+    val (validBits, pos4) = (sliceToUByte(byteVector, parsePosition, pos3 + validBitLength), pos3 + validBitLength)
     (OptionSet(
       value,
       validBits
