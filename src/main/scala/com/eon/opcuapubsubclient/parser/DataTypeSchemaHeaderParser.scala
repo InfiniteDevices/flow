@@ -18,18 +18,10 @@ object DataTypeSchemaHeaderParser extends (ByteVector => ParsePosition => (DataT
 
     @tailrec
     def namespaces(size: Int, pos: ParsePosition, acc: Vector[String] = Vector.empty): (Vector[String], ParsePosition) = {
-      // TODO: This parsing recursively can be refactored as a common abstraction! I'm using the same logic in StructureField parsing
       if (size > 0) {
-        // Get the length of the String element and get the String element based on the length
-        val (namespaceStrSize, pos1) = ParserUtils.parseUInt32(byteVector, pos)
-        if (namespaceStrSize > 0) {
-          val namespaceStr = ParserUtils.parseString(byteVector, pos1, size = namespaceStrSize)
-          namespaces(size - 1, pos1 + namespaceStrSize, acc :+ namespaceStr)
-        }
-        // There is nothing to parse, we add an empty namespace and proceed with the next
-        else namespaces(size - 1, pos1, acc :+ "")
-      }
-      else (acc, pos)
+        val (ns, nPos) = ParserUtils.parseString(byteVector, pos)
+        namespaces(size - 1, nPos, acc :+ ns)
+      } else (acc, pos)
     }
 
     // 2. Populate the namespaces array

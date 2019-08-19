@@ -4,7 +4,8 @@ import java.nio.charset.StandardCharsets
 import java.util.UUID
 
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.BuiltInType._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{BuiltInType, HigherOrder, LocalizedText, NodeId, QualifiedName, SimpleOrder, Variant, VariantData}
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.ExtensionObjectEncoding.{ByteStringEncoding, XmlElementEncoding}
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{BuiltInType, DataValue, ExtensionObject, HigherOrder, LocalizedText, NodeId, QualifiedName, SimpleOrder, StatusCode, Variant, VariantData}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteOrdering.{BigEndian, LittleEndian}
 import scodec.bits.ByteVector
@@ -64,14 +65,16 @@ object ParserUtils {
   }
 
   def parseString(byteVector: ByteVector, from: ParsePosition): (String, ParsePosition) = {
-    val (strLength, pos) = parseUInt32(byteVector, from)
-    (parseString(byteVector, pos, strLength), pos + strLength)
-  }
 
-  def parseString(byteVector: ByteVector, from: ParsePosition, size: Int = 4): String = {
-    byteVector.slice(from, from + size).foldLeft("")((a, b) => {
-      a + b.toChar
-    })
+    def parseString(byteVector: ByteVector, from: ParsePosition, strLength: Int): String = {
+      byteVector.slice(from, from + strLength).foldLeft("")((a, b) => {
+        a + b.toChar
+      })
+    }
+
+    val (strLength, pos) = parseUInt32(byteVector, from)
+    if (strLength > 0) (parseString(byteVector, pos, strLength), pos + strLength)
+    else ("", pos)
   }
 
   // FIXME: Use a DateTime type rather than an Long
@@ -110,8 +113,9 @@ object ParserUtils {
     parseNodeId(byteVector, from)
   }
 
-  def parseStatusCode(byteVector: ByteVector, from: ParsePosition): (Int, ParsePosition) = {
-    parseUInt32(byteVector, from)
+  def parseStatusCode(byteVector: ByteVector, from: ParsePosition): (StatusCode, ParsePosition) = {
+    val (status, pos) = parseUInt32(byteVector, from)
+    (StatusCode(status), pos)
   }
 
   def parseQualifiedName(byteVector: ByteVector, from: ParsePosition): (QualifiedName, ParsePosition) = {
@@ -139,11 +143,64 @@ object ParserUtils {
     else (LocalizedText(), pos1)
   }
 
-  // TODO: Implement
-  def parseExtensionObject(byteVector: ByteVector, from: ParsePosition): (String, ParsePosition) = ("", 0)
+  /**
+    * OPC UA Spec Part 6, version 1.04, Page 15, Chapter 5.2.2.15, Table 14
+    * @param byteVector
+    * @param from
+    * @return
+    */
+  def parseExtensionObject(byteVector: ByteVector, from: ParsePosition): (ExtensionObject, ParsePosition) = {
+    val (encodingTypeId, pos1) = parseNodeId(byteVector, from)
+    val (encoding, pos2) = parseByte(byteVector, pos1)
+    encoding match {
+      case 0 =>
+        (
+          ExtensionObject(encodingTypeId, ByteStringEncoding(Vector.empty)),
+          pos2
+        )
+      case 1 =>
+        val (byteStr, pos3) = parseByteString(byteVector, pos2)
+        (
+          ExtensionObject(encodingTypeId, ByteStringEncoding(byteStr)),
+          pos3
+        )
+      case 2 =>
+        val (xmlElement, pos3) = parseXmlElement(byteVector, pos2)
+        (
+          ExtensionObject(encodingTypeId, XmlElementEncoding(xmlElement)),
+          pos3
+        )
+    }
+  }
 
-  // TODO: Implement
-  def parseDataValue(byteVector: ByteVector, from: ParsePosition): (String, ParsePosition) = ("", 0)
+  /**
+    * OPC UA Spec Part 6, version 1.04, Page 17, Chapter 5.2.2.17, Table 16
+    * @param byteVector
+    * @param from
+    * @return
+    */
+  def parseDataValue(byteVector: ByteVector, from: ParsePosition): (DataValue, ParsePosition) = {
+    val (byte, pos1) = parseByte(byteVector, from)
+    val mask = byte & 0xFF
+
+    val (variant, pos2) = if ((mask & 0x01) != 0) parseVariant(byteVector, pos1)
+      else (Variant(SimpleOrder(Vector.empty)), pos1)
+    val (status, pos3) = if ((mask & 0x02) != 0) parseStatusCode(byteVector, pos2)
+      else (StatusCode(0), pos2) // TODO: Is this OKAY for the default status code?
+    val (sourceTime, pos4) = if ((mask & 0x04) != 0) parseDateTime(byteVector, pos3)
+      else (0L, pos3) // TODO: DateTime need to be fixed?
+    val (sourcePicoseconds, pos5) = if ((mask & 0x10) != 0) parseUInt16(byteVector, pos4)
+      else (0, pos4)
+    val (serverTime, pos6) = if ((mask & 0x08) != 0) parseDateTime(byteVector, pos5)
+      else (0L, pos5)
+    val (serverPicoseconds, pos7) = if ((mask & 0x20) != 0) parseUInt16(byteVector, pos6)
+      else (0, pos6)
+
+    (
+      DataValue(variant, status, sourceTime, sourcePicoseconds, serverTime, serverPicoseconds),
+      pos7
+    )
+  }
 
   /**
     * Implemented according to the OPC UA Spec version 1.04,

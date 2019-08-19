@@ -357,14 +357,36 @@ object OpcUAPubSubTypes {
     case class XmlElementType      (a: String,        id: Int = 16) extends BuiltInType
     case class NodeIdType          (a: NodeId,        id: Int = 17) extends BuiltInType
     case class ExpandedNodeIdType  (a: NodeId,        id: Int = 18) extends BuiltInType // FIXME: Wrong type used, fix it later
-    case class StatusCodeType      (a: Int,           id: Int = 19) extends BuiltInType
+    case class StatusCodeType      (a: StatusCode,    id: Int = 19) extends BuiltInType
     case class QualifiedNameType   (a: QualifiedName, id: Int = 20) extends BuiltInType
     case class LocalizedTextType   (a: LocalizedText, id: Int = 21) extends BuiltInType
-    case class ExtensionObjectType (a: String,        id: Int = 22) extends BuiltInType // FIXME: Wrong type used, fix it later
-    case class DataValueType       (a: String,        id: Int = 23) extends BuiltInType // FIXME: Wrong type used, fix it later
+    case class ExtensionObjectType (a: ExtensionObject, id: Int = 22) extends BuiltInType // FIXME: Wrong type used, fix it later
+    case class DataValueType       (a: DataValue,       id: Int = 23) extends BuiltInType // FIXME: Wrong type used, fix it later
     case class VariantType         (a: Variant,       id: Int = 24) extends BuiltInType
     case class DiagnosticInfoType  (a: String,        id: Int = 25) extends BuiltInType // FIXME: Wrong type used, fix it later
 
   }
   // ******************************************* BuiltInTypes  ****************************************************** //
+
+  sealed trait ExtensionObjectEncoding
+  object ExtensionObjectEncoding {
+    case class ByteStringEncoding(bytes: Vector[Byte]) extends ExtensionObjectEncoding
+    case class XmlElementEncoding(xmlElement: String) extends ExtensionObjectEncoding
+  }
+
+  case class ExtensionObject(
+    encodingTypeId: NodeId,
+    encodedBody: ExtensionObjectEncoding
+  )
+
+  case class StatusCode(value: Long)
+
+  case class DataValue(
+    value: Variant,
+    status: StatusCode,
+    sourceTime: Long, // TODO: Need to be a Datetime type
+    sourcePicoseconds: Int,
+    serverTime: Long, // TODO: Need to be a Datetime type
+    serverPicoseconds: Int
+  )
 }
