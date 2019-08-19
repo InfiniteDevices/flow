@@ -284,7 +284,7 @@ object OpcUAPubSubTypes {
     arrayDimensions: Int,
     maxStringLength: Int,
     dataSetFieldId: UUID,
-    properties: Vector[(QualifiedName, Variant)]
+    properties: Vector[KeyValueProperty]
   )
 
   case class OptionSet(
@@ -388,5 +388,10 @@ object OpcUAPubSubTypes {
     sourcePicoseconds: Int,
     serverTime: Long, // TODO: Need to be a Datetime type
     serverPicoseconds: Int
+  )
+
+  case class KeyValueProperty(
+    qName: QualifiedName,
+    value: Variant
   )
 }

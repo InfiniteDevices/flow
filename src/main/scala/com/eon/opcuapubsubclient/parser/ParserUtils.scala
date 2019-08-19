@@ -4,8 +4,8 @@ import java.nio.charset.StandardCharsets
 import java.util.UUID
 
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.BuiltInType._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.ExtensionObjectEncoding.{ByteStringEncoding, XmlElementEncoding}
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{BuiltInType, DataValue, ExtensionObject, HigherOrder, LocalizedText, NodeId, QualifiedName, SimpleOrder, StatusCode, Variant, VariantData}
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.ExtensionObjectEncoding._
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes._
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteOrdering.{BigEndian, LittleEndian}
 import scodec.bits.ByteVector
@@ -272,8 +272,7 @@ object ParserUtils {
 
   // TODO: Implement pending ones
   def parseBuiltInType(byteVector: ByteVector, builtInTypeId: Int, from: ParsePosition): (BuiltInType, ParsePosition) = builtInTypeId match {
-    case 0 =>
-      (ZombieType(""), from)
+    case 0 => (ZombieType(""), from)
     case 1 =>
       val (bool, pos) = parseBoolean(byteVector, from)
       (BooleanType(bool, builtInTypeId), pos)
@@ -343,14 +342,14 @@ object ParserUtils {
     case 23 =>
       val (dataValue, pos) = parseDataValue(byteVector, from)
       (DataValueType(dataValue, builtInTypeId), pos)
-    case 25 =>
+    case 24 =>
       val (variant, pos) = parseVariant(byteVector, from)
       (VariantType(variant, builtInTypeId), pos)
     case 25 =>
       val (diagnosticInfo, pos) = parseDiagnosticInfo(byteVector, from)
       (DiagnosticInfoType(diagnosticInfo, builtInTypeId), pos)
-    case _ =>
-      (ZombieType(""), from)
+    // If nothing fits then a Zombie appears!
+    case _ => (ZombieType(""), from)
   }
 
   def parseArrayDimensions(byteVector: ByteVector, from: ParsePosition): (Vector[Int], ParsePosition) = {
@@ -367,6 +366,19 @@ object ParserUtils {
     arrayDimensions(size, pos1, Vector.empty)
   }
 
-  // TODO: Implementation pending!
-  def parseKPropertiesKeyValuePairs(byteVector: ByteVector, pos: ParsePosition): (Vector[(QualifiedName, String)], ParsePosition) = ???
+  def parseKeyValueProperties(byteVector: ByteVector, from: ParsePosition): (Vector[KeyValueProperty], ParsePosition) = {
+
+    @tailrec
+    def parseKeyValueProperty(size: Int, pos: ParsePosition, acc: Vector[KeyValueProperty]): (Vector[KeyValueProperty], ParsePosition) = {
+      if (size < 1) (acc, pos)
+      else {
+        val (qName, pos1) = parseQualifiedName(byteVector, pos)
+        val (variant, pos2) = parseVariant(byteVector, pos1)
+        val kvProp = KeyValueProperty(qName, variant)
+        parseKeyValueProperty(size - 1, pos2, acc :+ kvProp)
+      }
+    }
+    val (keyValuePropSize, pos1) = ParserUtils.parseUInt32(byteVector, from)
+    parseKeyValueProperty(keyValuePropSize, pos1, Vector.empty)
+  }
 }

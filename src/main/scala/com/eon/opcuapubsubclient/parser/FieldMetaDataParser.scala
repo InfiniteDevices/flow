@@ -29,15 +29,28 @@ object FieldMetaDataParser extends (ByteVector => Int => ParsePosition => (Vecto
         val (valueRank, pos6) = ParserUtils.parseUInt32(byteVector, pos5)
         val (arrayDimensions, pos7) = ParserUtils.parseUInt32(byteVector, pos6)
         val (maxStringLength, pos8) = ParserUtils.parseUInt32(byteVector, pos7)
-        val (dataSetFieldId, pos9) = ParserUtils.parseGuid(byteVector, pos8)
+        val (dataSetFieldId, pos9) = ParserUtils.parseGuid(byteVector, pos8) // TODO: This is wrong! Fix this!
+
+        val (kvProperties, pos10) = ParserUtils.parseKeyValueProperties(byteVector, pos9)
+
+        // TODO: Parser is error free until here!
 
         // TODO... rest of the fields!
-        val (keyValuePairLength, pos10) = ParserUtils.parseUInt32(byteVector, pos9)
 
+        val fieldMetaData = FieldMetaData(
+          name,
+          description,
+          optionSet,
+          builtInType,
+          dataType,
+          valueRank,
+          arrayDimensions,
+          maxStringLength,
+          dataSetFieldId,
+          kvProperties
+        )
 
-        println(keyValuePairLength)
-
-        fieldMetaData(size - 1, pos, acc)
+        fieldMetaData(size - 1, pos10, acc :+ fieldMetaData)
       } else (acc, pos)
     }
 
