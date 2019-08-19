@@ -62,10 +62,11 @@ object NodeIdParser extends (ByteVector => ParsePosition => (NodeId, ParsePositi
             NodeIdIdentifier.StringIdentifier(value = str)
           ), parsePosition + pos2)
         case 0x04 => // GUID: See OPC UA Spec version 1.04, Part 6, Page 11, Figure 5
+          val (guid, nPos) = ParserUtils.parseGuid(byteVector, pos1)
           (NodeId(
             namespaceIndex = defaultNsIndex,
-            NodeIdIdentifier.GuidIdentifier(value = ParserUtils.parseGuid(byteVector, pos1))
-          ), nsIndexPos + 16) // GUID is always 16 bytes long as defined in the Spec!
+            NodeIdIdentifier.GuidIdentifier(guid)
+          ), nPos) // GUID is always 16 bytes long as defined in the Spec!
         case 0x05 => // Opaque (ByteString) or can be treated as a Vector[Byte]
           val (byteStr, pos1) = ParserUtils.parseByteString(byteVector, nsIndexPos)
           (NodeId(

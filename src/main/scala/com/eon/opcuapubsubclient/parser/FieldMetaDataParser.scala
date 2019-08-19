@@ -29,7 +29,7 @@ object FieldMetaDataParser extends (ByteVector => Int => ParsePosition => (Vecto
         val (valueRank, pos6) = ParserUtils.parseUInt32(byteVector, pos5)
         val (arrayDimensions, pos7) = ParserUtils.parseUInt32(byteVector, pos6)
         val (maxStringLength, pos8) = ParserUtils.parseUInt32(byteVector, pos7)
-        val (dataSetFieldId, pos9) = (ParserUtils.parseGuid(byteVector, pos8), pos8 + 16) // TODO: Check if this is this correct?
+        val (dataSetFieldId, pos9) = ParserUtils.parseGuid(byteVector, pos8)
 
         // TODO... rest of the fields!
         val (keyValuePairLength, pos10) = ParserUtils.parseUInt32(byteVector, pos9)

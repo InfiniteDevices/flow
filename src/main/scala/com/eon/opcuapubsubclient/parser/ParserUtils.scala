@@ -80,14 +80,14 @@ object ParserUtils {
   }
 
   // TODO: Test if this works correctly!
-  def parseGuid(byteVector: ByteVector, pos: ParsePosition): UUID = {
+  def parseGuid(byteVector: ByteVector, pos: ParsePosition): (UUID, ParsePosition) = {
     val (part1, pos1) = parseUInt32(byteVector, pos) // 4 bytes
     println(part1)
     val (part2, pos2) = (byteVector.slice(from = pos1, until = pos1 + 2).toShort(signed = false, ordering = LittleEndian), pos1 + 2) // 2 bytes
     val (part3, pos3) = (byteVector.slice(from = pos2, until = pos2 + 2).toShort(signed = false, ordering = LittleEndian), pos2 + 2) // 2 bytes
     val (part4, _) = (byteVector.slice(from = pos3, until = pos3 + 8).toLong(signed = false, ordering = BigEndian), pos3 + 8) // 8 bytes intentionally Big Endian
     val msb = (part1 << 32) | (part2 << 16) | part3
-    new UUID(msb, part4)
+    (new UUID(msb, part4), pos + 16) // GUID is always 16 bytes long as per the Spec
   }
 
   def parseByteString(byteVector: ByteVector, from: ParsePosition): (Vector[Byte], ParsePosition) = {
@@ -257,7 +257,7 @@ object ParserUtils {
       val (dateTime, pos) = parseDateTime(byteVector, from)
       (DateTimeType(dateTime, builtInTypeId), pos)
     case 14 =>
-      val (uuid, pos) = (parseGuid(byteVector, from), from + 16) // FIXME: Fix the parseGuid to return the position as well!
+      val (uuid, pos) = parseGuid(byteVector, from)
       (GuidType(uuid, builtInTypeId), pos)
     case 15 =>
       val (byteString, pos) = parseByteString(byteVector, from)

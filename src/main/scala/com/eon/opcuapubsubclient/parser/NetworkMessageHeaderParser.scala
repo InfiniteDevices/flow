@@ -80,7 +80,8 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
 
     // The DataSetClassId shall be omitted if bit 3 of the ExtendedFlags1 is false
     val (someDataSetClassId, pos5) = if (extFlags1.dataSetClassIDEnabled) {
-      (Some(ParserUtils.parseGuid(byteVector, pos4)), pos4 + 16) // GUID is always 16 bytes long
+      val (dataSetClassId, nPos) = ParserUtils.parseGuid(byteVector, pos4)
+      (Some(dataSetClassId), nPos) // GUID is always 16 bytes long
     } else (None, pos4)
 
     // Finally at the end of the world, we get this ugly NetworkMessageHeader
