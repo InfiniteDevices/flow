@@ -1,6 +1,6 @@
 package com.eon.opcuapubsubclient.parser
 
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{QualifiedName, StructureDefinition, StructureDescription, StructureField, StructureType}
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{StructureDefinition, StructureDescription, StructureField, StructureType}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteOrdering.LittleEndian
 import scodec.bits.ByteVector
@@ -38,10 +38,13 @@ object StructureDescriptionParser extends (ByteVector => Int => ParsePosition =>
     // 5. Identify the StructureType enum (OPC UA Spec., version 1.04, Part 6, Page 17 under Enumerations)
     // Enums are of type Int32 which is 4 bytes long
     // TODO: What happens when nothing matches!!!!
-    val (structureType, pos5) = ParserUtils.sliceToInt(byteVector, pos4, pos4 + 4) match {
-      case 0 => (StructureType.Simple, pos4 + 4)
-      case 1 => (StructureType.OptionalFields, pos4 + 4)
-      case 2 => (StructureType.Union, pos4 + 4)
+    val (structureType, pos5) = {
+      val (result, nPos) = ParserUtils.parseUInt32(byteVector, pos4)
+      result match {
+        case 0 => (StructureType.Simple, nPos)
+        case 1 => (StructureType.OptionalFields, nPos)
+        case 2 => (StructureType.Union, nPos)
+      }
     }
 
     @tailrec
@@ -53,12 +56,13 @@ object StructureDescriptionParser extends (ByteVector => Int => ParsePosition =>
         val (description, pos2) = ParserUtils.parseLocalizedText(byteVector, pos1)
         val (dataType, pos3) = NodeIdParser(byteVector)(pos2)
         // ValueRank is of type Int32 or 4 bytes long
-        val (valueRank, pos4) = (ParserUtils.sliceToInt(byteVector, pos3, pos3 + 4), pos3 + 4)
+        val (valueRank, pos4) = ParserUtils.parseUInt32(byteVector, pos3)
         // TODO: Check this with the OPC UA Discussion forum - Is this correct to assume that the arrayDimensions is -1 in case of a -1 ValueRank?
         // https://opcfoundation.org/forum/opc-ua-standard/opc-ua-valuerank-and-arraydimensions-decoding/#p1909
-        val (arrayDimensions, pos5) = (ParserUtils.sliceToInt(byteVector, pos4, pos4 + 4), pos4 + 4)
-        val (maxStringLength, pos6) = (ParserUtils.sliceToInt(byteVector, pos5, pos5 + 4), pos5 + 4)
-        val (isOptional, pos7) = (ParserUtils.sliceToInt(byteVector, pos6, pos6 + 1) == 1, pos6 + 1)
+        val (arrayDimensions, pos5) = ParserUtils.parseUInt32(byteVector, pos4)
+        val (maxStringLength, pos6) = ParserUtils.parseUInt32(byteVector, pos5)
+        val (isOptional, pos7) = ParserUtils.parseBoolean(byteVector, pos6)
+
         (StructureField(
           name,
           description,

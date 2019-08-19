@@ -38,13 +38,13 @@ object DataTypeSchemaHeaderParser extends (ByteVector => ParsePosition => (DataT
     // 3. Get the size of the StructureDescription array which is of type Int32
     // OPC UA Spec version 1.04, Part 3, Page 17, Chapter 5.2.5, Array size is of type Int32 or 4 bytes
     // Using the size, populate the StructureDescription sequence
-    val (structDescSize, pos3) = (ParserUtils.sliceToInt(byteVector, pos2, pos2 + 4), pos2 + 4)
+    val (structDescSize, pos3) = ParserUtils.parseUInt32(byteVector, pos2)
     val (structureDataTypes, pos4) = StructureDescriptionParser(byteVector)(structDescSize)(pos3)
 
     // 4. Get the size of the EnumDescription array which is of type Int32
     // OPC UA Spec version 1.04, Part 3, Page 17, Chapter 5.2.5, Array size is of type Int32 or 4 bytes
     // Using the size, populate the EnumDescription sequence
-    val (enumDataTypeSize, pos5) = (ParserUtils.sliceToInt(byteVector, pos4, pos4 + 4), pos4 + 4)
+    val (enumDataTypeSize, pos5) = ParserUtils.parseUInt32(byteVector, pos4)
     val (enumDataTypes, pos6) =
       if(enumDataTypeSize != -1) EnumDescriptionParser(byteVector)(pos5)
       else (Vector.empty[EnumDescription], pos5)
@@ -52,7 +52,7 @@ object DataTypeSchemaHeaderParser extends (ByteVector => ParsePosition => (DataT
     // 5. Get the size of the SimpleTypeDescription array which is of type Int32
     // OPC UA Spec version 1.04, Part 3, Page 17, Chapter 5.2.5, Array size is of type Int32 or 4 bytes
     // Using the size, populate the SimpleTypeDescription sequence
-    val (simpleDataTypeSize, pos7) = (ParserUtils.sliceToInt(byteVector, pos6, pos6 + 4), pos6 + 4)
+    val (simpleDataTypeSize, pos7) = ParserUtils.parseUInt32(byteVector, pos6)
     val (simpleDataTypes, pos8) =
       if(simpleDataTypeSize != -1) SimpleTypeDescriptionParser(byteVector)(pos7)
       else (Vector.empty[SimpleTypeDescription], pos7)

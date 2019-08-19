@@ -310,20 +310,6 @@ object ParserUtils {
     arrayDimensions(size, pos1, Vector.empty)
   }
 
-
-  // TODO: Throw this shit away....
-
-
-
-
-
-  def sliceToInt(byteVector: ByteVector, from: ParsePosition, until: ParsePosition): Int =
-    slice(byteVector, from, until).toInt(ordering = LittleEndian)
-
-  // TODO: This is buggy, fix this later, do not use this now!
-
-
-  // TODO:
-
+  // TODO: Implementation pending!
   def parseKPropertiesKeyValuePairs(byteVector: ByteVector, pos: ParsePosition): (Vector[(QualifiedName, String)], ParsePosition) = ???
 }

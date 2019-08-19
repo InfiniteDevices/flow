@@ -23,7 +23,7 @@ object DataSetMetaDataParser extends (ByteVector => ParsePosition => V[(Int, Par
     val (description, pos4) = ParserUtils.parseLocalizedText(byteVector, pos3)
 
     // 4. Parse the size if the Fields array (Array length is encoded as Int32 or 4 bytes)
-    val (fieldMetaDataSize, pos5) = (ParserUtils.sliceToInt(byteVector, pos4, pos4 + 4), pos4 + 4)
+    val (fieldMetaDataSize, pos5) = ParserUtils.parseUInt32(byteVector, pos4)
 
     val (fieldMetaDataVector, pos6) = FieldMetaDataParser(byteVector)(fieldMetaDataSize)(pos5)
 
