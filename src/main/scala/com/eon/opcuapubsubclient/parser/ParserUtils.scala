@@ -85,7 +85,6 @@ object ParserUtils {
   // TODO: Test if this works correctly!
   def parseGuid(byteVector: ByteVector, pos: ParsePosition): (UUID, ParsePosition) = {
     val (part1, pos1) = parseUInt32(byteVector, pos) // 4 bytes
-    println(part1)
     val (part2, pos2) = (byteVector.slice(from = pos1, until = pos1 + 2).toShort(signed = false, ordering = LittleEndian), pos1 + 2) // 2 bytes
     val (part3, pos3) = (byteVector.slice(from = pos2, until = pos2 + 2).toShort(signed = false, ordering = LittleEndian), pos2 + 2) // 2 bytes
     val (part4, _) = (byteVector.slice(from = pos3, until = pos3 + 8).toLong(signed = false, ordering = BigEndian), pos3 + 8) // 8 bytes intentionally Big Endian

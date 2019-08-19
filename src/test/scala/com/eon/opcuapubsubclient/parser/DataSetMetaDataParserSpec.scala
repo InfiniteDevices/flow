@@ -14,8 +14,10 @@ class DataSetMetaDataParserSpec extends UnitSpec with BeforeAndAfterAll {
 
   "it" should "parse DataSetMetaData successfully" in {
     val seq = testData.split(" ")
-    println(seq(769))
+    println(seq.length)
     //println(s"${seq(756)} ${seq(757)} ${seq(758)} ${seq(759)} ${seq(760)} ${seq(761)} ${seq(762)} ${seq(763)} ${seq(764)} ${seq(765)} ${seq(766)} ${seq(767)} ${seq(768)} ${seq(769)} ${seq(770)} ${seq(771)} ")
-    DataSetMetaDataParser(byteVector)(initParsePosition)
+    val Right(result) = DataSetMetaDataParser(byteVector)(initParsePosition)
+    println(result._1)
+    println(result._2)
   }
 }
