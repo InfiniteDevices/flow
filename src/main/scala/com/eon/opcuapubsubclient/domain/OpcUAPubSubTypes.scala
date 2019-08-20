@@ -330,8 +330,8 @@ object OpcUAPubSubTypes {
     timeStamp: Option[Long] = None,
     picoSeconds: Option[Int] = None,
     status: Option[Int] = None,
-    configMajorVersion: Option[Long] = None,
-    configMinorVersion: Option[Long] = None
+    configMajorVersion: Option[Int] = None,
+    configMinorVersion: Option[Int] = None
   )
 
   // TODO: What about the actual message?

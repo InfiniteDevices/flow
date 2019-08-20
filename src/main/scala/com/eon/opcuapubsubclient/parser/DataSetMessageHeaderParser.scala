@@ -14,16 +14,22 @@ object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataS
     val (dsFlags1, pos1) = dataSetFlag1(BitVector(byteVector(parsePosition)), parsePosition)
     val (dsFlags2, pos2) = dataSetFlag2(BitVector(byteVector(parsePosition)), pos1, dsFlags1.dataSetFlags2Enabled)
     val (seqNr, pos3) = dataSetMsgSequenceNumber(byteVector, pos2, dsFlags1.dataSetMsgSeqNrEnabled)
-
-    // TODO: Check if this abstraction works!
     val (timeStamp, pos4) = dsFlags2.tsEnabled.toOption(ParserUtils.parseInt64, byteVector, pos3)
     val (picoSeconds, pos5) = dsFlags2.picoSecondsIncluded.toOption(ParserUtils.parseUInt16, byteVector, pos4)
     val (status, pos6) = dsFlags1.statusEnabled.toOption(ParserUtils.parseUInt16, byteVector, pos5)
     val (majorCfgVersion, pos7) = dsFlags1.cfgMajorVersionEnabled.toOption(ParserUtils.parseVersionTime, byteVector, pos6)
     val (minorCfgVersion, pos8) = dsFlags1.cfgMajorVersionEnabled.toOption(ParserUtils.parseVersionTime, byteVector, pos7)
 
-
-    (DataSetMessageHeader(), parsePosition)
+    (DataSetMessageHeader(
+      dsFlags1,
+      dsFlags2,
+      seqNr,
+      timeStamp,
+      picoSeconds,
+      status,
+      majorCfgVersion,
+      minorCfgVersion
+    ), pos8)
   }
 
   def dataSetFlag1(bitV: BitVector, from: ParsePosition): (DataSetFlags1, ParsePosition) = {
@@ -71,6 +77,6 @@ object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataS
 
   // TODO: There is some logic defined in Page 80, Table 81 of the Spec., It is yet to be implemented here!
   def dataSetMsgSequenceNumber(byteVector: ByteVector, from: ParsePosition, isEnabled: Boolean): (Option[Int], ParsePosition) = {
-    isEnabled.toOptionWithPosition(ParserUtils.parseUInt16, byteVector, from)
+    isEnabled.toOption(ParserUtils.parseUInt16, byteVector, from)
   }
 }

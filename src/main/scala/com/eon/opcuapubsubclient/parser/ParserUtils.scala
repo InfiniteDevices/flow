@@ -93,8 +93,8 @@ object ParserUtils {
     * @return
     * // FIXME: Use a DateTime type as UTC rather than an Long
     */
-  def parseVersionTime(byteVector: ByteVector, from: ParsePosition): (Long, ParsePosition) = {
-    parseUInt64(byteVector, from)
+  def parseVersionTime(byteVector: ByteVector, from: ParsePosition): (Int, ParsePosition) = {
+    parseUInt32(byteVector, from)
   }
 
   // TODO: Test if this works correctly!

@@ -28,5 +28,6 @@ object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(
 
     // For the size in the header, read 2 bytes for each element which would give the size of the actual DataSetMessage
     val (sizes, pos1) = dataSetMessageSize(dataSetMsgPayloadHdr.messageCount, parsePosition, Vector.empty)
+
   }
 }
