@@ -50,7 +50,8 @@ class OpcUAPubSubParser(config: OpcUAPubSubConfig) {
       }
       (_, securityHeaderParsePosition) = parsedSecurityHeader
 
-      // STEP 6: Parse the DataSetMetaData TODO: Under implementation
+      // STEP 6: Based on the NetworkMessageType, we parse the Payload accordingly
+
       parsedDataSetMetaData <- DataSetMetaDataParser(byteVector)(securityHeaderParsePosition)
       (_, dataSetMetaDataParsePos) = parsedDataSetMetaData
     } yield {

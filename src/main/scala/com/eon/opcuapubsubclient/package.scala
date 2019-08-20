@@ -1,6 +1,8 @@
 package com.eon
 
 import com.eon.opcuapubsubclient.domain.errors._
+import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
+import scodec.bits.ByteVector
 
 
 package object opcuapubsubclient {
@@ -30,7 +32,11 @@ package object opcuapubsubclient {
   }
 
   implicit class BooleanToOption(val self: Boolean) extends AnyVal {
-    def toOption[A](value: => A): Option[A] =
-      if (self) Some(value) else None
+    def toOption[A](fn: (ByteVector, ParsePosition) => (A, ParsePosition), byteVector: ByteVector, from: ParsePosition): (Option[A], ParsePosition) = {
+      if (self) {
+        val (result, pos) = fn(byteVector, from)
+        (Some(result), pos)
+      } else (None, from)
+    }
   }
 }

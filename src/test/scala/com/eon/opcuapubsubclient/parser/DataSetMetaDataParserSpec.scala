@@ -19,5 +19,7 @@ class DataSetMetaDataParserSpec extends UnitSpec with BeforeAndAfterAll {
     val Right(result) = DataSetMetaDataParser(byteVector)(initParsePosition)
     println(result._1)
     println(result._2)
+
+    assert(seq.length === result._2)
   }
 }

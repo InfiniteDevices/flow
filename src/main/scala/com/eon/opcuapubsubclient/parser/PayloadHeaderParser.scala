@@ -1,18 +1,16 @@
 package com.eon.opcuapubsubclient.parser
 
-import java.nio.{ByteBuffer, ByteOrder}
-
 import com.eon.opcuapubsubclient._
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DiscoveryResponseMessageTypes.{DataSetMetaData, DataSetWriterConfig, PublisherEndPoint, Reserved}
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.NetworkMessageTypes.NetworkMessageType
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{DiscoveryRequestMessageTypes, NetworkMessageTypes, PayloadHeader}
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.PayloadHeader.{DataSetPayloadHeader, DiscoveryRequestPayloadHeader, DiscoveryResponsePayloadHeader, InvalidPayloadHeader}
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.PayloadHeader.{DataSetMessagePayloadHeader, DiscoveryRequestMessagePayloadHeader, DiscoveryResponseMessagePayloadHeader, InvalidPayloadHeader}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
-import scodec.bits.{BitVector, ByteVector}
+import scodec.bits.ByteVector
 
 import scala.annotation.tailrec
 
-
+// TODO: Refactor & reuse from ParserUtils!
 object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePosition => V[(PayloadHeader, ParsePosition)]) {
 
   override def apply(byteVector: ByteVector): NetworkMessageType => ParsePosition => V[(PayloadHeader, ParsePosition)]= {
@@ -22,20 +20,21 @@ object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePos
   def parsePayloadHeader(byteVector: ByteVector, msgType: NetworkMessageType, parsePosition: ParsePosition): (PayloadHeader, ParsePosition) = {
     msgType match {
       case NetworkMessageTypes.DiscoveryRequestType =>
-        val (requestType, pos1) = (BitVector(byteVector(parsePosition)).toInt(signed = false), parsePosition + 1)
+        val (requestType, pos1) = ParserUtils.parseByteAsInt(byteVector, parsePosition)
         requestType match {
           case 0 =>
             (InvalidPayloadHeader("Discovery Request Header cannot be of type " +
               "Reserved (See OPC UA Pub Sub Part 14 Spec., Page 75 Table 85"), pos1)
           case 1 =>
-            val (informationType, pos2) = (BitVector(byteVector(pos1)).toInt(signed = false) match {
+            val (byteAsInt, pos2) = ParserUtils.parseByteAsInt(byteVector, pos1)
+            val informationType = byteAsInt match {
               case 0 => DiscoveryRequestMessageTypes.Reserved
               case 1 => DiscoveryRequestMessageTypes.PublisherServer
               case 2 => DiscoveryRequestMessageTypes.DataSetMetaData
               case 3 => DiscoveryRequestMessageTypes.DataSetWriterConfig
-            }, pos1 + 1)
+            }
             // TODO FIXME: DataSetWriterId parsing is pending
-            (DiscoveryRequestPayloadHeader(informationType, Vector.empty), pos2)
+            (DiscoveryRequestMessagePayloadHeader(informationType, Vector.empty), pos2)
         }
 
       case NetworkMessageTypes.DiscoveryResponseType =>
@@ -47,19 +46,20 @@ object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePos
           2 DataSet Metadata message (see 7.2.2.4.2.4)
           3 DataSetWriter configuration message (see 7.2.2.4.2.5)
          */
-        val (discoveryResponseMsgTyp, pos1) = (BitVector(byteVector(parsePosition)).toInt(signed = false) match {
+        val (byteAsInt, pos1) = ParserUtils.parseByteAsInt(byteVector, parsePosition)
+        val discoveryResponseMsgTyp = byteAsInt match {
           case 0 => Reserved
           case 1 => PublisherEndPoint
           case 2 => DataSetMetaData
           case 3 => DataSetWriterConfig
-        }, parsePosition + 1)
+        }
         val (sequenceNumber, pos2) = ParserUtils.parseUInt16(byteVector, pos1)
 
         if (discoveryResponseMsgTyp == Reserved)
           (InvalidPayloadHeader("Discovery Response Message Header cannot be of type " +
             "Reserved (See OPC UA Pub Sub Part 14 Spec., Page 75 Table 87"), pos2)
         else
-          (DiscoveryResponsePayloadHeader(discoveryResponseMsgTyp, sequenceNumber), pos2)
+          (DiscoveryResponseMessagePayloadHeader(discoveryResponseMsgTyp, sequenceNumber), pos2)
 
       // This is the default
       case NetworkMessageTypes.DataSetMessageType | _ =>
@@ -68,16 +68,16 @@ object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePos
           The NetworkMessage shall contain at least one DataSetMessages
           if the NetworkMessage type is DataSetMessage payload.
         */
-        val (count, pos1) = (BitVector(byteVector(parsePosition)).toInt(signed = false), parsePosition + 1)
+        val (count, pos1) = ParserUtils.parseByte(byteVector, parsePosition)
 
         @tailrec
-        def populateDataSetWriterIds(size: Int, newPos: Int, dataSetWriterIds: Vector[Int]): (Vector[Int], ParsePosition) = {
+        def dataSetWriterIds(size: Int, from: Int, acc: Vector[Int]): (Vector[Int], ParsePosition) = {
           if (count <= size) {
-            val dataSetWriterId = ByteBuffer.wrap(byteVector.slice(from = newPos, until = newPos + 4).toArray).order(ByteOrder.LITTLE_ENDIAN).getInt
-            (dataSetWriterIds :+ dataSetWriterId, newPos + 4)
+            val (dataSetWriterId, nPos) = ParserUtils.parseUInt16(byteVector, from)
+            (acc :+ dataSetWriterId, nPos)
           } else {
-            val dataSetWriterId = ByteBuffer.wrap(byteVector.slice(from = newPos, until = newPos + 4).toArray).order(ByteOrder.LITTLE_ENDIAN).getInt
-            populateDataSetWriterIds(size + 1, newPos + 4, dataSetWriterIds :+ dataSetWriterId)
+            val (dataSetWriterId, nPos) = ParserUtils.parseUInt16(byteVector, from)
+            dataSetWriterIds(size + 1, nPos, acc :+ dataSetWriterId)
           }
         }
 
@@ -87,8 +87,8 @@ object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePos
           (InvalidPayloadHeader(msg), pos1)
         }
         else {
-          val (dataSetWriterIds, newPos) = populateDataSetWriterIds(0, pos1, Vector.empty)
-          (DataSetPayloadHeader(count, dataSetWriterIds), newPos)
+          val (dataSetWriterIdSeq, newPos) = dataSetWriterIds(0, pos1, Vector.empty)
+          (DataSetMessagePayloadHeader(count, dataSetWriterIdSeq), newPos)
         }
     }
   }

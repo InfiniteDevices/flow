@@ -4,7 +4,7 @@ import com.eon.opcuapubsubclient.UnitSpec.StringAsByteVector
 import com.eon.opcuapubsubclient.UnitSpec
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.NetworkMessageTypes.DiscoveryResponseType
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{DiscoveryResponseMessageTypes, PayloadHeader}
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.PayloadHeader.DiscoveryResponsePayloadHeader
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.PayloadHeader.DiscoveryResponseMessagePayloadHeader
 import org.scalatest.BeforeAndAfterAll
 
 
@@ -19,7 +19,7 @@ class PayloadHeaderParserSpec extends UnitSpec with BeforeAndAfterAll {
 
     // Test the assertions
     payloadHeader match {
-      case discoveryResponse: DiscoveryResponsePayloadHeader =>
+      case discoveryResponse: DiscoveryResponseMessagePayloadHeader =>
         assert(discoveryResponse.responseType == DiscoveryResponseMessageTypes.DataSetMetaData)
         assert(discoveryResponse.sequenceNumber == 19)
 

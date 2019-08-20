@@ -4,6 +4,7 @@ import java.util.UUID
 
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetFieldEncodings.DataSetFieldEncoding
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetMessageTypes.DataSetMessageType
+import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetMessageTypes.DataSetMessageType.KeyFrame
 import org.joda.time.DateTime
 
 
@@ -63,9 +64,10 @@ object OpcUAPubSubTypes {
   object DataSetFieldEncodings {
     sealed trait DataSetFieldEncoding
     case object DataSetFieldEncoding {
-      case object Variant extends DataSetFieldEncoding
-      case object Raw     extends DataSetFieldEncoding
-      case object Value   extends DataSetFieldEncoding
+      case object VariantFieldEncoding  extends DataSetFieldEncoding
+      case object RawFieldEncoding      extends DataSetFieldEncoding
+      case object ValueFieldEncoding    extends DataSetFieldEncoding
+      case object ReservedFieldEncoding extends DataSetFieldEncoding
     }
   }
 
@@ -153,17 +155,17 @@ object OpcUAPubSubTypes {
       msg: String
     ) extends PayloadHeader
 
-    case class DataSetPayloadHeader(
+    case class DataSetMessagePayloadHeader(
       messageCount: Int = 0,
       dataSetWriterIds: Vector[Int] = Vector.empty
     ) extends PayloadHeader
 
-    case class DiscoveryResponsePayloadHeader(
+    case class DiscoveryResponseMessagePayloadHeader(
       responseType: DiscoveryResponseMessageTypes.DiscoveryResponseMessageType,
       sequenceNumber: Int
     ) extends PayloadHeader
 
-    case class DiscoveryRequestPayloadHeader(
+    case class DiscoveryRequestMessagePayloadHeader(
       informationType: DiscoveryRequestMessageTypes.DiscoveryRequestMessageType,
       dataSetWriterIds: Vector[Int] = Vector.empty
     ) extends PayloadHeader
@@ -306,30 +308,35 @@ object OpcUAPubSubTypes {
     dataSetMessages: Seq[DataSetMessage]
   )
 
-  case class DataSetMessage(
-    dataSetFlags1: DataSetFlags1,
-    dataSetFlags2: DataSetFlags2,
-    messageSequenceNumber: Int,
-    timeStamp: DateTime,
-    picoSeconds: Int,
-    statusCode: Int,
-    majorVersion: Int,
-    minorVersion: Int
-  )
-
   case class DataSetFlags1(
     dataSetMessageValid: Boolean = false,
     dataSetFieldEncoding: DataSetFieldEncoding,
-    dataSetMessageSequenceNumber: Boolean = false,
+    dataSetMsgSeqNrEnabled: Boolean = false,
     statusEnabled: Boolean = false,
-    configMajorVersionEnabled: Boolean = false,
-    configMinorVersionEnabled: Boolean = false,
+    cfgMajorVersionEnabled: Boolean = false,
+    cfgMinorVersionEnabled: Boolean = false,
     dataSetFlags2Enabled: Boolean = false
   )
   case class DataSetFlags2(
-    dataSetMessageType: DataSetMessageType,
-    timeStampEnabled: Boolean = false,
+    dataSetMessageType: DataSetMessageType = KeyFrame,
+    tsEnabled: Boolean = false,
     picoSecondsIncluded: Boolean = false
+  )
+
+  case class DataSetMessageHeader(
+    dataSetFlags1: DataSetFlags1,
+    dataSetFlags2: DataSetFlags2,
+    dataSetMsgSeqNr: Option[Int] = None,
+    timeStamp: Option[Long] = None,
+    picoSeconds: Option[Int] = None,
+    status: Option[Int] = None,
+    configMajorVersion: Option[Long] = None,
+    configMinorVersion: Option[Long] = None
+  )
+
+  // TODO: What about the actual message?
+  case class DataSetMessage(
+    dataSetMessageHeader: DataSetMessageHeader
   )
 
   // ******************************************* DataSetMessage  **************************************************** //
@@ -408,4 +415,6 @@ object OpcUAPubSubTypes {
     majorVersion: Long,
     minorVersion: Long
   )
+
+
 }

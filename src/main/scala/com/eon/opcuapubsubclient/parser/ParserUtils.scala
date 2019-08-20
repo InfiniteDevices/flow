@@ -8,7 +8,7 @@ import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.ExtensionObjectEncoding
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes._
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteOrdering.{BigEndian, LittleEndian}
-import scodec.bits.ByteVector
+import scodec.bits.{BitVector, ByteVector}
 
 import scala.annotation.tailrec
 
@@ -28,6 +28,10 @@ object ParserUtils {
 
   def parseUByte(byteVector: ByteVector, from: ParsePosition): (Byte, ParsePosition) = {
     (slice(byteVector, from, from + 1).toByte(signed = false), from + 1)
+  }
+
+  def parseByteAsInt(byteVector: ByteVector, from: ParsePosition): (Int, ParsePosition) = {
+    (BitVector(byteVector(from)).toInt(signed = false), from + 1)
   }
 
   def parseInt16(byteVector: ByteVector, from: ParsePosition): (Int, ParsePosition) = {
@@ -77,9 +81,20 @@ object ParserUtils {
     else ("", pos)
   }
 
-  // FIXME: Use a DateTime type rather than an Long
+  // FIXME: Use a DateTime type as UTC rather than an Long
   def parseDateTime(byteVector: ByteVector, from: ParsePosition): (Long, ParsePosition) = {
     parseInt64(byteVector, from)
+  }
+
+  /**
+    * OPC UA Spec., version 1.04, Part 4, Page 160, Chapter 7.38
+    * @param byteVector
+    * @param from
+    * @return
+    * // FIXME: Use a DateTime type as UTC rather than an Long
+    */
+  def parseVersionTime(byteVector: ByteVector, from: ParsePosition): (Long, ParsePosition) = {
+    parseUInt64(byteVector, from)
   }
 
   // TODO: Test if this works correctly!
