@@ -334,9 +334,19 @@ object OpcUAPubSubTypes {
     configMinorVersion: Option[Int] = None
   )
 
-  // TODO: What about the actual message?
+  sealed trait DataSetMessageFrame
+  object DataSetMessageFrame {
+    case class DataSetMessageKeyFrame(
+
+    ) extends DataSetMessageFrame
+    case class DataSetMessageDeltaFrame() extends DataSetMessageFrame
+    case class DataSetMessageEvent() extends DataSetMessageFrame
+    case class DataSetMessageKeepAlive() extends DataSetMessageFrame
+  }
+
   case class DataSetMessage(
-    dataSetMessageHeader: DataSetMessageHeader
+    dataSetMessageHeader: DataSetMessageHeader,
+    messageFrame: DataSetMessageFrame
   )
 
   // ******************************************* DataSetMessage  **************************************************** //
