@@ -57,19 +57,20 @@ object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(
 
     // TODO: Implement!
     def dataSetKeyFrame(messageSize: Int, pos: ParsePosition): (DataSetMessageKeyFrame, ParsePosition) = {
-
+      val (fieldCount, pos1) = ParserUtils.parseUInt16(byteVector, pos)
+      (DataSetMessageKeyFrame(), pos1)
     }
 
     def dataSetDeltaFrame(messageSize: Int, pos: ParsePosition): (DataSetMessageDeltaFrame, ParsePosition) = {
-
+      (DataSetMessageDeltaFrame(), pos)
     }
 
     def dataSetEvent(messageSize: Int, pos: ParsePosition): (DataSetMessageEvent, ParsePosition) = {
-
+      (DataSetMessageEvent(), pos)
     }
 
     def dataSetKeepAlive(messageSize: Int, pos: ParsePosition): (DataSetMessageKeepAlive, ParsePosition) = {
-
+      (DataSetMessageKeepAlive(), pos)
     }
 
     dataSetMessageSeq(sizes, pos1, Vector.empty)

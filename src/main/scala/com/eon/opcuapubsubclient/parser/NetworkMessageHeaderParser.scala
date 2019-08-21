@@ -59,6 +59,7 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
     ), position + 1)
   }
 
+  // TODO: Reuse option.toBoolean from the package file
   def parseNetworkMessageHeader(byteVector: ByteVector, parsePosition: Int = 0): (NetworkMessageHeader, Int) = {
     val (networkMsgHeader, pos1) = networkMessageHeader(BitVector(byteVector.head), parsePosition)
 
@@ -68,7 +69,7 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
     else (ExtendedFlags1(), pos1)
 
     // Check if we have ExtendedFlags2 set, if not, do not increment the position
-    val (extFlags2, pos3) = if (networkMsgHeader.extendedFlags1Enabled)
+    val (extFlags2, pos3) = if (networkMsgHeader.extendedFlags1.extendedFlags2Enabled)
       extendedFlags2(BitVector(byteVector(pos2)), pos2)
     else (ExtendedFlags2(), pos2)
 
