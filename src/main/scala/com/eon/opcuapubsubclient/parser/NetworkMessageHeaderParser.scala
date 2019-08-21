@@ -59,7 +59,6 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
     ), position + 1)
   }
 
-  // TODO: Reuse option.toBoolean from the package file
   def parseNetworkMessageHeader(byteVector: ByteVector, parsePosition: Int = 0): (NetworkMessageHeader, Int) = {
     val (networkMsgHeader, pos1) = networkMessageHeader(BitVector(byteVector.head), parsePosition)
 
@@ -74,16 +73,12 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
     else (ExtendedFlags2(), pos2)
 
     // The PublisherId shall be omitted if bit 4 of the UADPFlags is false
-    val (somePublisherId, pos4): (Option[String], Int) = if (networkMsgHeader.publisherIdEnabled) {
-      val (publisherId, nPos) = ParserUtils.parseString(byteVector, pos3)
-      (Some(publisherId), nPos)
-    } else (None, pos3)
+    val (somePublisherId, pos4): (Option[String], Int) = networkMsgHeader.publisherIdEnabled.toOption(ParserUtils.parseString, byteVector, pos3)
+
+    networkMsgHeader.publisherIdEnabled.toOption(ParserUtils.parseString, byteVector, pos3)
 
     // The DataSetClassId shall be omitted if bit 3 of the ExtendedFlags1 is false
-    val (someDataSetClassId, pos5) = if (extFlags1.dataSetClassIDEnabled) {
-      val (dataSetClassId, nPos) = ParserUtils.parseGuid(byteVector, pos4)
-      (Some(dataSetClassId), nPos) // GUID is always 16 bytes long
-    } else (None, pos4)
+    val (someDataSetClassId, pos5) = extFlags1.dataSetClassIDEnabled.toOption(ParserUtils.parseGuid, byteVector, pos4)
 
     // Finally at the end of the world, we get this ugly NetworkMessageHeader
     (networkMsgHeader.copy(

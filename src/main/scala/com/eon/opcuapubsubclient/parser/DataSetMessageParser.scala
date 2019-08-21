@@ -1,10 +1,10 @@
 package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetMessageFrame._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetMessage
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetMessageTypes.DataSetMessageType._
 import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.PayloadHeader.{DataSetMessagePayloadHeader => DSMPH}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessage
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame._
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType._
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 

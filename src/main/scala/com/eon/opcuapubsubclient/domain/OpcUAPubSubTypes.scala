@@ -1,10 +1,6 @@
 package com.eon.opcuapubsubclient.domain
 
 import java.util.UUID
-
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetFieldEncodings.DataSetFieldEncoding
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetMessageTypes.DataSetMessageType
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetMessageTypes.DataSetMessageType.KeyFrame
 import org.joda.time.DateTime
 
 
@@ -48,26 +44,6 @@ object OpcUAPubSubTypes {
       case object DataSetMessage    extends PayloadType
       case object DiscoveryRequest  extends PayloadType
       case object DiscoveryResponse extends PayloadType
-    }
-  }
-
-  object DataSetMessageTypes {
-    sealed trait DataSetMessageType
-    case object DataSetMessageType {
-      case object KeyFrame   extends DataSetMessageType
-      case object DeltaFrame extends DataSetMessageType
-      case object Event      extends DataSetMessageType
-      case object KeepAlive  extends DataSetMessageType
-    }
-  }
-
-  object DataSetFieldEncodings {
-    sealed trait DataSetFieldEncoding
-    case object DataSetFieldEncoding {
-      case object VariantFieldEncoding  extends DataSetFieldEncoding
-      case object RawFieldEncoding      extends DataSetFieldEncoding
-      case object ValueFieldEncoding    extends DataSetFieldEncoding
-      case object ReservedFieldEncoding extends DataSetFieldEncoding
     }
   }
 
@@ -143,7 +119,7 @@ object OpcUAPubSubTypes {
   )
 
   /**
-    * The payload header depends on the UADP NetworkMessage Type flags defined in the ExtendedFlags2 bit range 0-3.
+    * The payload header depends on the UADP NetworkMessage Type flags defined in the ExtendedFlags2 bit range 2-4.
     * The default is DataSetMessage if the ExtendedFlags2 field is not enabled.
     * The PayloadHeader shall be omitted if bit 6 of the UADPFlags is false.
     * The PayloadHeader is not contained in the payload but it is contained in the unencrypted NetworkMessage
@@ -303,51 +279,8 @@ object OpcUAPubSubTypes {
   // ******************************************* DataSetMetaData **************************************************** //
 
   // ******************************************* DataSetMessage  **************************************************** //
-  case class Payload(
-    sizes: Seq[Int],
-    dataSetMessages: Seq[DataSetMessage]
-  )
 
-  case class DataSetFlags1(
-    dataSetMessageValid: Boolean = false,
-    dataSetFieldEncoding: DataSetFieldEncoding,
-    dataSetMsgSeqNrEnabled: Boolean = false,
-    statusEnabled: Boolean = false,
-    cfgMajorVersionEnabled: Boolean = false,
-    cfgMinorVersionEnabled: Boolean = false,
-    dataSetFlags2Enabled: Boolean = false
-  )
-  case class DataSetFlags2(
-    dataSetMessageType: DataSetMessageType = KeyFrame,
-    tsEnabled: Boolean = false,
-    picoSecondsIncluded: Boolean = false
-  )
 
-  case class DataSetMessageHeader(
-    dataSetFlags1: DataSetFlags1,
-    dataSetFlags2: DataSetFlags2,
-    dataSetMsgSeqNr: Option[Int] = None,
-    timeStamp: Option[Long] = None,
-    picoSeconds: Option[Int] = None,
-    status: Option[Int] = None,
-    configMajorVersion: Option[Int] = None,
-    configMinorVersion: Option[Int] = None
-  )
-
-  sealed trait DataSetMessageFrame
-  object DataSetMessageFrame {
-    case class DataSetMessageKeyFrame(
-
-    ) extends DataSetMessageFrame
-    case class DataSetMessageDeltaFrame() extends DataSetMessageFrame
-    case class DataSetMessageEvent() extends DataSetMessageFrame
-    case class DataSetMessageKeepAlive() extends DataSetMessageFrame
-  }
-
-  case class DataSetMessage(
-    dataSetMessageHeader: DataSetMessageHeader,
-    messageFrame: DataSetMessageFrame
-  )
 
   // ******************************************* DataSetMessage  **************************************************** //
 

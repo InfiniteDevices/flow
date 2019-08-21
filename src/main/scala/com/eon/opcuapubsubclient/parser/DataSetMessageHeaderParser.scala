@@ -1,9 +1,9 @@
 package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetFieldEncodings.DataSetFieldEncoding._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DataSetMessageTypes.DataSetMessageType.{DeltaFrame, Event, KeepAlive, KeyFrame}
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{DataSetFlags1, DataSetFlags2, DataSetMessageHeader}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetFieldEncodings.DataSetFieldEncoding.{RawFieldEncoding, ReservedFieldEncoding, ValueFieldEncoding, VariantFieldEncoding}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType._
+import com.eon.opcuapubsubclient.domain.PayloadTypes.{DataSetFlags1, DataSetFlags2, DataSetMessageHeader}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.{BitVector, ByteVector}
 
