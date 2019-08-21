@@ -1,10 +1,11 @@
 package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.DiscoveryResponseMessageTypes.{DataSetMetaData, DataSetWriterConfig, PublisherEndPoint, Reserved}
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.NetworkMessageTypes.NetworkMessageType
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{DiscoveryRequestMessageTypes, NetworkMessageTypes, PayloadHeader}
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.PayloadHeader.{DataSetMessagePayloadHeader, DiscoveryRequestMessagePayloadHeader, DiscoveryResponseMessagePayloadHeader, InvalidPayloadHeader}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.NetworkMessageTypes.NetworkMessageType
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{NetworkMessageTypes, PayloadHeader}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader._
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DiscoveryRequestMessageTypes
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DiscoveryResponseMessageTypes._
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 

@@ -1,7 +1,7 @@
 package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.SecurityHeader
+import com.eon.opcuapubsubclient.domain.HeaderTypes.SecurityHeader
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 

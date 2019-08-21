@@ -3,7 +3,7 @@ package com.eon.opcuapubsubclient.parser
 import java.util.UUID
 
 import com.eon.opcuapubsubclient.UnitSpec
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.NodeIdIdentifier.{GuidIdentifier, NumericFourByteIdentifier, NumericTwoByteIdentifier, OpaqueIdentifier, StringIdentifier, UnknownIdentifier}
+import com.eon.opcuapubsubclient.domain.CommonTypes.NodeIdIdentifier._
 import org.scalatest.BeforeAndAfterAll
 import scodec.bits.ByteVector
 

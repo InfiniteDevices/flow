@@ -1,7 +1,7 @@
 package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.PayloadHeader.{DataSetMessagePayloadHeader => DSMPH}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader.{DataSetMessagePayloadHeader => DSMPH}
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessage
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame._
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType._

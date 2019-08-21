@@ -1,7 +1,7 @@
 package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{ExtendedFlags1, ExtendedFlags2, NetworkMessageHeader, NetworkMessageTypes, PublisherIDTypes}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ExtendedFlags1, ExtendedFlags2, NetworkMessageHeader, NetworkMessageTypes, PublisherIDTypes}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.{BitVector, ByteVector}
 

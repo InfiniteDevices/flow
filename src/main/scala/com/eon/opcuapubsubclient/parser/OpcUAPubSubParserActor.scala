@@ -4,7 +4,7 @@ import java.nio.{ByteBuffer, ByteOrder}
 
 import akka.actor.{Actor, Props}
 import com.eon.opcuapubsubclient.config.OpcUAPubSubConfig
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{ExtendedFlags1, ExtendedFlags2, NetworkMessageHeader, NetworkMessageTypes, PublisherIDTypes}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ExtendedFlags1, ExtendedFlags2, NetworkMessageHeader, NetworkMessageTypes, PublisherIDTypes}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParserActor.Message._
 import scodec.bits.{BitVector, ByteVector}
 import scodec.codecs._

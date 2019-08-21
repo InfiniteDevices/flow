@@ -1,6 +1,6 @@
 package com.eon.opcuapubsubclient.parser
 
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{StructureDefinition, StructureDescription, StructureField, StructureType}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.{StructureDefinition, StructureDescription, StructureField, StructureType}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteOrdering.LittleEndian
 import scodec.bits.ByteVector
@@ -83,8 +83,6 @@ object StructureDescriptionParser extends (ByteVector => Int => ParsePosition =>
     // 6. Identify the StructureField sequence length and use it to populate the StructureField sequence
     val (structFieldLen, pos6) = (byteVector.slice(from = pos5, until = pos5 + 4).toInt(signed = false, ordering = LittleEndian), pos5 + 4)
     val (structureFieldsParsed, pos7) = parseStructureFields(byteVector, structFieldLen, pos6, Vector.empty)
-
-    // TODO: It is bug free until here....
 
     val structureDefinition = StructureDefinition(
       defaultEncodingId,

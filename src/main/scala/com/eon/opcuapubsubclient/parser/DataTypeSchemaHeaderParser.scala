@@ -1,6 +1,6 @@
 package com.eon.opcuapubsubclient.parser
 
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{DataTypeSchemaHeader, EnumDescription, SimpleTypeDescription}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.{DataTypeSchemaHeader, EnumDescription, SimpleTypeDescription}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 

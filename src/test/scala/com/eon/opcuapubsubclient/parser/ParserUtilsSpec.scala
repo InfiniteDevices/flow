@@ -1,10 +1,8 @@
 package com.eon.opcuapubsubclient.parser
 
 
-import java.util
 
 import com.eon.opcuapubsubclient.UnitSpec
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.BuiltInType
 
 
 // TODO: Rewrite this class with tests! This is just to see how we can parse Variant data

@@ -3,7 +3,7 @@ package com.eon.opcuapubsubclient.parser
 import com.eon.opcuapubsubclient.config.OpcUAPubSubConfig
 import OpcUAPubSubParser._
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{GroupHeader, SecurityHeader}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{GroupHeader, SecurityHeader}
 import scodec.bits.ByteVector
 
 /**

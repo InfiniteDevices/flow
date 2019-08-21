@@ -1,6 +1,6 @@
 package com.eon.opcuapubsubclient.parser
 
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{FieldMetaData, QualifiedName}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.FieldMetaData
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 

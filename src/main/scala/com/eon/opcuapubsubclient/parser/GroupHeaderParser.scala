@@ -3,7 +3,7 @@ package com.eon.opcuapubsubclient.parser
 import java.nio.{ByteBuffer, ByteOrder}
 
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.GroupHeader
+import com.eon.opcuapubsubclient.domain.HeaderTypes.GroupHeader
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.{BitVector, ByteVector}
 

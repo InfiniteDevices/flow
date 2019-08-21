@@ -2,9 +2,10 @@ package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient.UnitSpec.StringAsByteVector
 import com.eon.opcuapubsubclient.UnitSpec
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.NetworkMessageTypes.DiscoveryResponseType
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{DiscoveryResponseMessageTypes, PayloadHeader}
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.PayloadHeader.DiscoveryResponseMessagePayloadHeader
+import com.eon.opcuapubsubclient.domain.HeaderTypes.NetworkMessageTypes.DiscoveryResponseType
+import com.eon.opcuapubsubclient.domain.HeaderTypes._
+import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader.DiscoveryResponseMessagePayloadHeader
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DiscoveryResponseMessageTypes
 import org.scalatest.BeforeAndAfterAll
 
 

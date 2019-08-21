@@ -1,11 +1,10 @@
 package com.eon.opcuapubsubclient.parser
 
 import java.nio.charset.StandardCharsets
-import java.util.UUID
 
-import com.eon.opcuapubsubclient.domain.OpcUAPubSubTypes.{NodeId, NodeIdIdentifier}
+import com.eon.opcuapubsubclient.domain.CommonTypes.{NodeId, NodeIdIdentifier}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
-import scodec.bits.ByteOrdering.{BigEndian, LittleEndian}
+import scodec.bits.ByteOrdering.LittleEndian
 import scodec.bits.ByteVector
 
 // FIXME: See this this implementation could be simplified and moved into ParserUtils!
