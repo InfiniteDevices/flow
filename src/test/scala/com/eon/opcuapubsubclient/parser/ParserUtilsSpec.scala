@@ -1,72 +1,51 @@
 package com.eon.opcuapubsubclient.parser
 
-
-
 import com.eon.opcuapubsubclient.UnitSpec
+import com.eon.opcuapubsubclient.UnitSpec._
+import com.eon.opcuapubsubclient.domain.CommonTypes.StatusCode
+import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.{ParsePosition => P}
+import scodec.bits.{ByteVector => B}
 
 
-// TODO: Rewrite this class with tests! This is just to see how we can parse Variant data
 class ParserUtilsSpec extends UnitSpec {
 
-  def unflatten(arr: Vector[Int], dimensions: Vector[Int], offset: Int): Object = {
-    if (dimensions.length == 1) {
-      (0 until dimensions(0)).zipWithIndex.map { case (_, i) =>
-        Vector(arr(offset + i))
-      }
-    } else {
-      val tail = dimensions.tail
-      (0 until dimensions(0)).zipWithIndex.map { case (_, i) =>
-        val resss = unflatten(arr, tail, offset + i * tail.length)
-        Vector(resss)
-      }
+  type S = String
+
+  private val byteVector = "4 0 0 0 65 56 48 48 77 88 2 1".asByteVector
+
+  "it" should "do something" in {
+
+    def unTuple[A](fn: (B, P) => (A, P)): A = {
+      val (res, _) = fn(byteVector, initParsePosition)
+      res
     }
-  }/*
 
-  def unflatten(`type`: Class[_],
-                        array: Object,
-                        dimensions: Array[Int],
-                        offset: Int): Object =
-    if (dimensions.length == 1) {
-      val a: Object = java.lang.reflect.Array.newInstance(`type`, dimensions(0))
-      for (i <- 0 until dimensions(0)) {
-        java.lang.reflect.Array.set(a, i, java.lang.reflect.Array.get(array, offset + i))
-      }
-      a
-    } else {
-      val a: Object = java.lang.reflect.Array.newInstance(`type`, dimensions.toList:_*)
-      val tail: Array[Int] = util.Arrays.copyOfRange(dimensions, 1, dimensions.length)
-      for (i <- 0 until dimensions(0)) {
-        val element: AnyRef =
-          unflatten(`type`, array, tail, offset + i * tail.length)
-        java.lang.reflect.Array.set(a, i, element)
-      }
-      a
-    } */
+    val resultMessage = ">> parsed result was not what was expected for parser function ParserUtils."
+    val positionMessage = ">> position in the ByteVector for the parsed result was not what was expected for parser function ParserUtils."
 
-  trait Matrix
-  case class SimpleMatrix(rows: Vector[Int]) extends Matrix
-  case class HigherMatrix(matrices: Vector[Matrix]) extends Matrix
-
-  def unflatten(flat: Vector[Int], dims: Vector[Int]): Matrix = {
-    if (dims.length <= 1) {
-      SimpleMatrix(flat)
-    } else {
-      val (Vector(dim), rest) = dims.splitAt(1)
-
-      val subs = flat.grouped(flat.length/dim).map(a => unflatten(a, rest)).toVector
-
-      HigherMatrix(subs)
+    def test[A](fn: (B, P) => (A, P))(expectedResult: A, expectedPos: P)(resultMsg: S, positionMsg: S) = {
+      val (res, pos) = fn(byteVector, initParsePosition)
+      assert(res == expectedResult,resultMsg)
+      assert(pos == expectedPos, positionMsg)
     }
-  }
 
+    test(ParserUtils.parseBoolean)(true,1)(s"${resultMessage}parseBoolean",s"${positionMessage}parseBoolean")
 
-  "dummy test" should "do dummy things" in {
+    test(ParserUtils.parseByte)(4,1)(s"${resultMessage}parseByte",s"${positionMessage}parseByte")
+    test(ParserUtils.parseUByte)(4,1)(s"${resultMessage}parseUByte",s"${positionMessage}parseUByte")
+    test[Int](ParserUtils.parseByteAsInt)(4,1)(s"${resultMessage}parseByteAsInt",s"${positionMessage}parseByteAsInt")
 
-    case class Elem(elems: Vector[Elem])
-    val dimensions = Array(2,2,2,3)
-    val elems = Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23)
+    test[Int](ParserUtils.parseInt16)(4,2)(s"${resultMessage}parseInt16",s"${positionMessage}parseInt16")
+    test[Int](ParserUtils.parseUInt16)(4,2)(s"${resultMessage}parseUInt16",s"${positionMessage}parseUInt16")
+    test[Int](ParserUtils.parseInt32)(4,4)(s"${resultMessage}parseInt32",s"${positionMessage}parseInt32")
+    test[Int](ParserUtils.parseUInt32)(4,4)(s"${resultMessage}parseUInt32",s"${positionMessage}parseUInt32")
 
-    val result = unflatten(elems.toVector, dimensions.toVector)
-    println(result)
+    test[Long](ParserUtils.parseUInt64)(3472337164526682116L, 8)(s"${resultMessage}parseUInt64",s"${positionMessage}parseUInt64")
+
+    test[String](ParserUtils.parseString)("A800",8)(s"${resultMessage}parseString",s"${positionMessage}parseString")
+    test[StatusCode](ParserUtils.parseStatusCode)( StatusCode(4),4)(s"${resultMessage}parseStatusCode",s"${positionMessage}parseStatusCode")
+
+    // TODO: Add additional tests for the remaining parsers!
+
   }
 }

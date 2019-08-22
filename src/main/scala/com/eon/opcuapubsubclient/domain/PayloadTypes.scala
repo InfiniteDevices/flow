@@ -92,10 +92,12 @@ object PayloadTypes {
   object DataSetMessageFrame {
     case class DataSetMessageKeyFrame(
 
-                                     ) extends DataSetMessageFrame
+    ) extends DataSetMessageFrame
     case class DataSetMessageDeltaFrame() extends DataSetMessageFrame
     case class DataSetMessageEvent() extends DataSetMessageFrame
-    case class DataSetMessageKeepAlive() extends DataSetMessageFrame
+    case class DataSetMessageKeepAlive(
+      nextSequenceNumber: Int
+    ) extends DataSetMessageFrame
   }
 
   case class DataSetMessage(

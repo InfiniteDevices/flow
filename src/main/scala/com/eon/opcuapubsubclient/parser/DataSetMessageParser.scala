@@ -70,7 +70,7 @@ object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(
     }
 
     def dataSetKeepAlive(messageSize: Int, pos: ParsePosition): (DataSetMessageKeepAlive, ParsePosition) = {
-      (DataSetMessageKeepAlive(), pos)
+      DataSetMessageKeepAliveParser(byteVector)(0)(pos) // TODO: What about the MessageSequenceNumber, Here I'm using 0 as default and this is wrong!
     }
 
     dataSetMessageSeq(sizes, pos1, Vector.empty)

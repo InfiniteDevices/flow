@@ -56,7 +56,7 @@ object ParserUtils {
   }
 
   def parseUInt64(byteVector: ByteVector, from: ParsePosition): (Long, ParsePosition) = {
-    (slice(byteVector, from, from + 8).toInt(signed = false, ordering = LittleEndian), from + 8)
+    (slice(byteVector, from, from + 8).toLong(signed = false, ordering = LittleEndian), from + 8)
   }
 
   def parseFloat(byteVector: ByteVector, from: ParsePosition): (Float, ParsePosition) = {
