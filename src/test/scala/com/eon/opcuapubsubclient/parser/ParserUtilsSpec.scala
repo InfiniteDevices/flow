@@ -33,17 +33,17 @@ class ParserUtilsSpec extends UnitSpec {
 
     test(ParserUtils.parseByte)(4,1)(s"${resultMessage}parseByte",s"${positionMessage}parseByte")
     test(ParserUtils.parseUByte)(4,1)(s"${resultMessage}parseUByte",s"${positionMessage}parseUByte")
-    test[Int](ParserUtils.parseByteAsInt)(4,1)(s"${resultMessage}parseByteAsInt",s"${positionMessage}parseByteAsInt")
+    test(ParserUtils.parseByteAsInt)(4,1)(s"${resultMessage}parseByteAsInt",s"${positionMessage}parseByteAsInt")
 
-    test[Int](ParserUtils.parseInt16)(4,2)(s"${resultMessage}parseInt16",s"${positionMessage}parseInt16")
-    test[Int](ParserUtils.parseUInt16)(4,2)(s"${resultMessage}parseUInt16",s"${positionMessage}parseUInt16")
-    test[Int](ParserUtils.parseInt32)(4,4)(s"${resultMessage}parseInt32",s"${positionMessage}parseInt32")
-    test[Int](ParserUtils.parseUInt32)(4,4)(s"${resultMessage}parseUInt32",s"${positionMessage}parseUInt32")
+    test(ParserUtils.parseInt16)(4,2)(s"${resultMessage}parseInt16",s"${positionMessage}parseInt16")
+    test(ParserUtils.parseUInt16)(4,2)(s"${resultMessage}parseUInt16",s"${positionMessage}parseUInt16")
+    test(ParserUtils.parseInt32)(4,4)(s"${resultMessage}parseInt32",s"${positionMessage}parseInt32")
+    test(ParserUtils.parseUInt32)(4,4)(s"${resultMessage}parseUInt32",s"${positionMessage}parseUInt32")
 
-    test[Long](ParserUtils.parseUInt64)(3472337164526682116L, 8)(s"${resultMessage}parseUInt64",s"${positionMessage}parseUInt64")
+    test(ParserUtils.parseUInt64)(3472337164526682116L, 8)(s"${resultMessage}parseUInt64",s"${positionMessage}parseUInt64")
 
-    test[String](ParserUtils.parseString)("A800",8)(s"${resultMessage}parseString",s"${positionMessage}parseString")
-    test[StatusCode](ParserUtils.parseStatusCode)( StatusCode(4),4)(s"${resultMessage}parseStatusCode",s"${positionMessage}parseStatusCode")
+    test(ParserUtils.parseString)("A800",8)(s"${resultMessage}parseString",s"${positionMessage}parseString")
+    test(ParserUtils.parseStatusCode)( StatusCode(4),4)(s"${resultMessage}parseStatusCode",s"${positionMessage}parseStatusCode")
 
     // TODO: Add additional tests for the remaining parsers!
 
