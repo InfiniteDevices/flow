@@ -73,9 +73,9 @@ object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePos
 
         @tailrec
         def dataSetWriterIds(size: Int, from: Int, acc: Vector[Int]): (Vector[Int], ParsePosition) = {
-          if (count < size) {
-            val (dataSetWriterId, nPos) = ParserUtils.parseUInt16(byteVector, from)
-            (acc :+ dataSetWriterId, nPos)
+          if (count <= size) {
+            //val (dataSetWriterId, nPos) = ParserUtils.parseUInt16(byteVector, from)
+            (acc, from)
           } else {
             val (dataSetWriterId, nPos) = ParserUtils.parseUInt16(byteVector, from)
             dataSetWriterIds(size + 1, nPos, acc :+ dataSetWriterId)

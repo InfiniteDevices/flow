@@ -21,7 +21,7 @@ object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(
 
     @tailrec
     def dataSetMessageSize(count: Int, from: ParsePosition, acc: Vector[Int]): (Vector[Int], ParsePosition) = {
-      if (count < 0) (acc, from)
+      if (count <= 0) (acc, from)
       else {
         val (size, pos) = ParserUtils.parseUInt16(byteVector, from)
         dataSetMessageSize(count - 1, pos, acc :+ size)
@@ -33,7 +33,7 @@ object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(
 
     @tailrec
     def dataSetMessageSeq(dataSetMsgSizeSeq: Seq[Int], from: ParsePosition, acc: Vector[DataSetMessage]): (Vector[DataSetMessage], ParsePosition) = dataSetMsgSizeSeq match {
-      case dataSetMsgSize :: Nil =>
+      case Seq(dataSetMsgSize) =>
         val (dataSetMsg, pos) = toDataSetMessage(dataSetMsgSize, from)
         (acc :+ dataSetMsg, pos)
       case dataSetMsgSize :: xs =>
