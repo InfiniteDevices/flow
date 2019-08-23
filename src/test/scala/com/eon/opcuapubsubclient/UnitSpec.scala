@@ -42,7 +42,7 @@ abstract class UnitSpec extends FlatSpec with Matchers with OptionValues with In
       object StructureDescription {
         val structureDescriptionLength = " 5 0 0 0"
         val nodeId = " 1 1 1 0 "
-        val qualifiedName = " 0 0 8 0 0 0 83 80 83 86 97 108 117 101"
+        val qualifiedName = "0 0 8 0 0 0 83 80 83 86 97 108 117 101"
 
         object StructureDefinition {
           val structureDefinition1: String = {
