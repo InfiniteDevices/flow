@@ -4,7 +4,6 @@ import com.eon.opcuapubsubclient.UnitSpec
 import com.eon.opcuapubsubclient.UnitSpec._
 import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader.DataSetMessagePayloadHeader
 import org.scalatest.BeforeAndAfterAll
-import scodec.bits.ByteVector
 
 // TODO: Under implementation
 class DataSetMessageParserSpec extends UnitSpec with BeforeAndAfterAll {
