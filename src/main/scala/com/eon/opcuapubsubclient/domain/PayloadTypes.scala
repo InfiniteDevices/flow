@@ -19,9 +19,7 @@ object PayloadTypes {
 
     case class DiscoveryRequestPayload() extends Payload
     case class DiscoveryResponsePayload(
-      dataSetWriterId: Int,
-      dataSetMetaData: DataSetMetaData,
-      status: StatusCode
+      dataSetMetaData: DataSetMetaData
     ) extends Payload
     case class InvalidPayload() extends Payload
   }
@@ -127,12 +125,14 @@ object PayloadTypes {
   }
 
   case class DataSetMetaData(
+    dataSetWriterId: Int,
     dataTypeSchemaHeader: DataTypeSchemaHeader,
     name: String,
     description: LocalizedText,
     fields: Seq[FieldMetaData],
     dataSetClassId: UUID,
-    configVersion: ConfigVersion
+    configVersion: ConfigVersion,
+    status: StatusCode
   )
 
   case class DataTypeSchemaHeader(
