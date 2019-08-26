@@ -57,7 +57,7 @@ class OpcUAPubSubParser(config: OpcUAPubSubConfig) {
       //parsedDataSetMetaData <- DataSetMetaDataParser(byteVector)(securityHeaderParsePosition)
       //(_, dataSetMetaDataParsePos) = parsedDataSetMetaData
     } yield {
-      println(dataSetMetaDataParsePos)
+      println(payload)
       // TODO: This is where we shoot the parsed objects into a JSON structure
       println("OK")
     }
