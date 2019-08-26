@@ -11,7 +11,7 @@ import scodec.bits.ByteVector
 
 import scala.annotation.tailrec
 
-// TODO: Refactor & reuse from ParserUtils!
+
 object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePosition => V[(PayloadHeader, ParsePosition)]) {
 
   override def apply(byteVector: ByteVector): NetworkMessageType => ParsePosition => V[(PayloadHeader, ParsePosition)]= {

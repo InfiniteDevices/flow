@@ -1,16 +1,16 @@
 package com.eon.opcuapubsubclient.parser
 
-import com.eon.opcuapubsubclient._
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMetaData
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 
 
-object DataSetMetaDataParser extends (ByteVector => ParsePosition => V[(Int, ParsePosition)]) {
+object DataSetMetaDataParser extends (ByteVector => ParsePosition => (DataSetMetaData, ParsePosition)) {
 
-  override def apply(byteVector: ByteVector): ParsePosition => V[(Int, ParsePosition)] =
-    parsePosition => validated { parseDataSetMetaData(byteVector, parsePosition) }
+  override def apply(byteVector: ByteVector): ParsePosition => (DataSetMetaData, ParsePosition) =
+    parsePosition => parseDataSetMetaData(byteVector, parsePosition)
 
-  def parseDataSetMetaData(byteVector: ByteVector, parsePosition: ParsePosition): (ParsePosition, ParsePosition) = {
+  def parseDataSetMetaData(byteVector: ByteVector, parsePosition: ParsePosition): (DataSetMetaData, ParsePosition) = {
     // 1. Parse the DataSetWriterId
     val (dataSetWriterId, pos1) = ParserUtils.parseUInt16(byteVector, parsePosition)
 
@@ -29,16 +29,13 @@ object DataSetMetaDataParser extends (ByteVector => ParsePosition => V[(Int, Par
     val (configVersion, pos8) = ParserUtils.parseConfigVersion(byteVector, pos7)
     val (status, pos9) = ParserUtils.parseStatusCode(byteVector, pos8)
 
-    /*(DataSetMetaData(
+    (DataSetMetaData(
       schemaHeader,
       name,
       description,
       fieldMetaData,
       dataSetClassId,
       configVersion
-    ), pos9) */
-
-    // TODO
-    (pos9, pos9)
+    ), pos9)
   }
 }

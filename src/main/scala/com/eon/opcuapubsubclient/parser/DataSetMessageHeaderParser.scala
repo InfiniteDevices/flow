@@ -52,11 +52,12 @@ object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataS
   }
 
   /**
-    * TODO: Understand the meaning in the spec!
     * Spec on Page 70 says that the DataSetFlags2 shall be omitted if bit 7 of the DataSetFlags1 is false
     * If the field is omitted, the Subscriber shall handle the related bits as false
     * Asked this as a question in the OPC Discussion Forum!
     * https://opcfoundation.org/forum/opc-ua-standard/datasetmessage-header-parsing-understanding-the-meaning-from-spec/#p1930
+    * If this field is omitted, then it means that there is no byte representing the DataSetFlags2 at all.
+    * So we return a default value!
     */
   def dataSetFlag2(bitV: BitVector, from: ParsePosition, isEnabled: Boolean): (DataSetFlags2, ParsePosition) = {
     if (isEnabled) {

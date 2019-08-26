@@ -19,7 +19,7 @@ object PayloadTypes {
 
     case class DiscoveryRequestPayload() extends Payload
     case class DiscoveryResponsePayload(
-
+      dataSetMetaData: DataSetMetaData
     ) extends Payload
     case class InvalidPayload() extends Payload
   }

@@ -2,7 +2,7 @@ package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient.UnitSpec
 import com.eon.opcuapubsubclient.UnitSpec._
-import com.eon.opcuapubsubclient.domain.CommonTypes.{QualifiedName, StatusCode}
+import com.eon.opcuapubsubclient.domain.CommonTypes.{LocalizedText, QualifiedName, StatusCode}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.{ParsePosition => P}
 import scodec.bits.{ByteVector => B}
 
@@ -49,6 +49,9 @@ class ParserUtilsSpec extends UnitSpec {
     val qNameByteVector = TestData.DataSetMetaDataTestData.StructureDescription.qualifiedName.asByteVector
     test(ParserUtils.parseQualifiedName, qNameByteVector)(qName,14)(s"${resultMessage}parseQualifiedName",s"${positionMessage}parseQualifiedName")
 
+    val locText = LocalizedText()
+    val locTextByteVector = TestData.DataSetMetaDataTestData.StructureDescription.qualifiedName.asByteVector
+    test(ParserUtils.parseQualifiedName, qNameByteVector)(qName,14)(s"${resultMessage}parseQualifiedName",s"${positionMessage}parseQualifiedName")
     // TODO: Add additional tests for the remaining parsers!
 
   }

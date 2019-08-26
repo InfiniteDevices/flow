@@ -51,9 +51,11 @@ class OpcUAPubSubParser(config: OpcUAPubSubConfig) {
       (_, securityHeaderParsePosition) = parsedSecurityHeader
 
       // STEP 6: Based on the NetworkMessageType, we parse the Payload accordingly
+      parsedPayload <- PayloadParser(byteVector)(networkMsgType)(securityHeaderParsePosition)
+      (payload, payloadParsePosition) = parsedPayload
 
-      parsedDataSetMetaData <- DataSetMetaDataParser(byteVector)(securityHeaderParsePosition)
-      (_, dataSetMetaDataParsePos) = parsedDataSetMetaData
+      //parsedDataSetMetaData <- DataSetMetaDataParser(byteVector)(securityHeaderParsePosition)
+      //(_, dataSetMetaDataParsePos) = parsedDataSetMetaData
     } yield {
       println(dataSetMetaDataParsePos)
       // TODO: This is where we shoot the parsed objects into a JSON structure
