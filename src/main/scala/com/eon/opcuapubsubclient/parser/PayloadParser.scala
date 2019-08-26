@@ -18,12 +18,14 @@ object PayloadParser extends (ByteVector => NetworkMessageType => ParsePosition 
   def parsePayload(byteVector: ByteVector, networkMsgType: NetworkMessageType, parsePosition: ParsePosition): (Payload, ParsePosition) = {
     networkMsgType match {
       case NetworkMessageTypes.DiscoveryRequestType =>
-        (InvalidPayload(), parsePosition)
+        (InvalidPayload(), parsePosition) // TODO: Implementation pending!
       case NetworkMessageTypes.DiscoveryResponseType =>
-        val (dataSetMetadata, pos) = DataSetMetaDataParser(byteVector)(parsePosition)
-        (DiscoveryResponsePayload(dataSetMetadata), pos)
+        val (dataSetWriterId, pos1) = ParserUtils.parseUInt16(byteVector, parsePosition)
+        val (dataSetMetadata, pos2) = DataSetMetaDataParser(byteVector)(pos1)
+        val (status, pos3) = ParserUtils.parseStatusCode(byteVector, pos2)
+        (DiscoveryResponsePayload(dataSetWriterId, dataSetMetadata, status), pos3)
       case NetworkMessageTypes.DataSetMessageType =>
-        (InvalidPayload(), parsePosition)
+        (InvalidPayload(), parsePosition) // TODO: Implementation pending!
       case _ =>
         (InvalidPayload(), parsePosition)
     }

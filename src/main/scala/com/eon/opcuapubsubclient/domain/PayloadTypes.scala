@@ -2,8 +2,8 @@ package com.eon.opcuapubsubclient.domain
 
 import java.util.UUID
 
-import com.eon.opcuapubsubclient.domain.CommonTypes.{LocalizedText, NodeId, QualifiedName}
-import com.eon.opcuapubsubclient.domain.HeaderTypes.KeyValueProperty
+import com.eon.opcuapubsubclient.domain.CommonTypes.{LocalizedText, NodeId, QualifiedName, StatusCode}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ConfigVersion, KeyValueProperty}
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetFieldEncodings.DataSetFieldEncoding
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType.KeyFrame
@@ -19,7 +19,9 @@ object PayloadTypes {
 
     case class DiscoveryRequestPayload() extends Payload
     case class DiscoveryResponsePayload(
-      dataSetMetaData: DataSetMetaData
+      dataSetWriterId: Int,
+      dataSetMetaData: DataSetMetaData,
+      status: StatusCode
     ) extends Payload
     case class InvalidPayload() extends Payload
   }
@@ -127,10 +129,10 @@ object PayloadTypes {
   case class DataSetMetaData(
     dataTypeSchemaHeader: DataTypeSchemaHeader,
     name: String,
-    description: String,
+    description: LocalizedText,
     fields: Seq[FieldMetaData],
     dataSetClassId: UUID,
-    configurationVersion: Int // TODO: Should this be a VersionType field
+    configVersion: ConfigVersion
   )
 
   case class DataTypeSchemaHeader(
