@@ -1,11 +1,11 @@
-package com.eon.opcuapubsubclient.parser
+package com.eon.opcuapubsubclient.parser.datasetmetadata
 
 import com.eon.opcuapubsubclient.domain.PayloadTypes.{DataTypeSchemaHeader, EnumDescription, SimpleTypeDescription}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
+import com.eon.opcuapubsubclient.parser.{ParserUtils, SimpleTypeDescriptionParser}
 import scodec.bits.ByteVector
 
 import scala.annotation.tailrec
-
 
 object DataTypeSchemaHeaderParser extends (ByteVector => ParsePosition => (DataTypeSchemaHeader, ParsePosition)) {
 

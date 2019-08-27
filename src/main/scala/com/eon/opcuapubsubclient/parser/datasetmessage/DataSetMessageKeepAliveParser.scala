@@ -1,9 +1,8 @@
-package com.eon.opcuapubsubclient.parser
+package com.eon.opcuapubsubclient.parser.datasetmessage
 
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame.DataSetMessageKeepAlive
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
-
 
 object DataSetMessageKeepAliveParser extends (ByteVector => Int => ParsePosition => (DataSetMessageKeepAlive, ParsePosition)) {
 

@@ -1,9 +1,9 @@
-package com.eon.opcuapubsubclient.parser
+package com.eon.opcuapubsubclient.parser.datasetmetadata
 
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMetaData
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
+import com.eon.opcuapubsubclient.parser.ParserUtils
 import scodec.bits.ByteVector
-
 
 object DataSetMetaDataParser extends (ByteVector => ParsePosition => (DataSetMetaData, ParsePosition)) {
 

@@ -2,6 +2,7 @@ package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient.UnitSpec
 import com.eon.opcuapubsubclient.UnitSpec.StringAsByteVector
+import com.eon.opcuapubsubclient.parser.datasetmetadata.DataSetMetaDataParser
 import org.scalatest.BeforeAndAfterAll
 import scodec.bits.ByteVector
 

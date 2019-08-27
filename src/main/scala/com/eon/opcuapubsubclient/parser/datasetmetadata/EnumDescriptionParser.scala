@@ -1,4 +1,4 @@
-package com.eon.opcuapubsubclient.parser
+package com.eon.opcuapubsubclient.parser.datasetmetadata
 
 import com.eon.opcuapubsubclient.domain.PayloadTypes.EnumDescription
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition

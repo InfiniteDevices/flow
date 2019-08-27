@@ -1,7 +1,8 @@
-package com.eon.opcuapubsubclient.parser
+package com.eon.opcuapubsubclient.parser.datasetmetadata
 
 import com.eon.opcuapubsubclient.domain.PayloadTypes.FieldMetaData
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
+import com.eon.opcuapubsubclient.parser.{NodeIdParser, OptionSetParser, ParserUtils}
 import scodec.bits.ByteVector
 
 import scala.annotation.tailrec

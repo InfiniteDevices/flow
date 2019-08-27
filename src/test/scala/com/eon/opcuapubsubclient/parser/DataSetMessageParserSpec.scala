@@ -3,6 +3,7 @@ package com.eon.opcuapubsubclient.parser
 import com.eon.opcuapubsubclient.UnitSpec
 import com.eon.opcuapubsubclient.UnitSpec._
 import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader.DataSetMessagePayloadHeader
+import com.eon.opcuapubsubclient.parser.datasetmessage.DataSetMessageParser
 import org.scalatest.BeforeAndAfterAll
 
 // TODO: Under implementation

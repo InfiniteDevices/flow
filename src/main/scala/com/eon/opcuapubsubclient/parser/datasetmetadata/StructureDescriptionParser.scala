@@ -1,12 +1,12 @@
-package com.eon.opcuapubsubclient.parser
+package com.eon.opcuapubsubclient.parser.datasetmetadata
 
 import com.eon.opcuapubsubclient.domain.PayloadTypes.{StructureDefinition, StructureDescription, StructureField, StructureType}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
+import com.eon.opcuapubsubclient.parser.{NodeIdParser, ParserUtils}
 import scodec.bits.ByteOrdering.LittleEndian
 import scodec.bits.ByteVector
 
 import scala.annotation.tailrec
-
 
 object StructureDescriptionParser extends (ByteVector => Int => ParsePosition => (Vector[StructureDescription], ParsePosition)) {
 
