@@ -4,6 +4,7 @@ import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame.DataSet
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 
+
 object DataSetMessageDeltaFrameParser extends (ByteVector => ParsePosition => (DataSetMessageDeltaFrame, ParsePosition)) {
 
   override def apply(v1: ByteVector): ParsePosition => (DataSetMessageDeltaFrame, ParsePosition) = ???

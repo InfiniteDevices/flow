@@ -3,8 +3,10 @@ package com.eon.opcuapubsubclient.parser
 import com.eon.opcuapubsubclient.UnitSpec
 import com.eon.opcuapubsubclient.UnitSpec.StringAsByteVector
 import com.eon.opcuapubsubclient.domain.HeaderTypes.NetworkMessageTypes.DiscoveryResponseType
+import com.eon.opcuapubsubclient.domain.errors.ValidationError
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.startParsePosition
 import org.scalatest.BeforeAndAfterAll
+import scodec.bits.ByteVector
 
 
 class NetworkMessageHeaderParserSpec extends UnitSpec with BeforeAndAfterAll {
@@ -36,13 +38,12 @@ class NetworkMessageHeaderParserSpec extends UnitSpec with BeforeAndAfterAll {
     assert(actualNetworkMsgHeader.publisherId.contains("A8000_CP802x_essen_lab_CP_8021_2_GF1818181818"))
     assert(actualNetworkMsgHeader.dataSetClassId.isEmpty)
 
-    //case class Message(version: Int, publisherIdEnabled: Boolean, groupHeaderEnabled: Boolean, payloadHeaderEnabled: Boolean, extendedFlags1Enabled: Boolean)
-    //val codec = (uint4 :: bool :: bool :: bool :: bool).as[Message]
-
     // Assert that we have consumed all the bytes from the input
     assert(pos == byteVector.length)
-    println(actualNetworkMsgHeader)
-    println(pos)
-    println(byteVector.length)
+  }
+
+  "it" should "fail parsing NetworkMessageHeader for invalid data" in {
+    val Left(parseError) = NetworkMessageHeaderParser(ByteVector.empty)(startParsePosition)
+    assert(parseError == ValidationError("invalid index: 0 for size 0"))
   }
 }

@@ -7,5 +7,6 @@ import scodec.bits.ByteVector
 // TODO: Implementation pending
 object DataSetMessageKeyFrameParser extends (ByteVector => ParsePosition => (DataSetMessageKeyFrame, ParsePosition)) {
 
-  override def apply(v1: ByteVector): ParsePosition => (DataSetMessageKeyFrame, ParsePosition) = ???
+  override def apply(v1: ByteVector): ParsePosition => (DataSetMessageKeyFrame, ParsePosition) =
+    parsePosition => (DataSetMessageKeyFrame(), parsePosition)
 }
