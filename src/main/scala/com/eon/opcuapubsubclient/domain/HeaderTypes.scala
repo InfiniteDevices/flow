@@ -3,7 +3,7 @@ package com.eon.opcuapubsubclient.domain
 import java.util.UUID
 
 import com.eon.opcuapubsubclient.domain.CommonTypes._
-import com.eon.opcuapubsubclient.domain.PayloadTypes.{DiscoveryRequestMessageTypes, DiscoveryResponseMessageTypes}
+import com.eon.opcuapubsubclient.domain.PayloadTypes._
 import org.joda.time.DateTime
 
 

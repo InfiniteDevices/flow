@@ -5,6 +5,7 @@ import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame.{DataSe
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType.{DeltaFrame, Event, KeepAlive, KeyFrame}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import com.eon.opcuapubsubclient.parser.ParserUtils
+import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader.{ DataSetMessagePayloadHeader => DSMPH }
 import com.eon.opcuapubsubclient.{V, validated}
 import scodec.bits.ByteVector
 

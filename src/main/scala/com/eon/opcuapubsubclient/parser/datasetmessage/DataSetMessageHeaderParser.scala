@@ -6,6 +6,8 @@ import com.eon.opcuapubsubclient.domain.PayloadTypes.{DataSetFlags1, DataSetFlag
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import com.eon.opcuapubsubclient.parser.ParserUtils
 import scodec.bits.{BitVector, ByteVector}
+import com.eon.opcuapubsubclient._
+
 
 object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataSetMessageHeader, ParsePosition)) {
 
