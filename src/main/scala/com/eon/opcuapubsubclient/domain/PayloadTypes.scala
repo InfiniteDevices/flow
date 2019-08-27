@@ -118,11 +118,9 @@ object PayloadTypes {
   }
 
   sealed trait StructureType
-  case object StructureType {
-    case object Simple extends StructureType
-    case object OptionalFields extends StructureType
-    case object Union extends StructureType
-  }
+  case object Simple extends StructureType
+  case object OptionalFields extends StructureType
+  case object Union extends StructureType
 
   case class DataSetMetaData(
     dataSetWriterId: Int,
@@ -143,9 +141,9 @@ object PayloadTypes {
   )
 
   // TODO: Fix me with proper definition of the fields
-  case class EnumDescription()
+  case class EnumDescription(str: String = "")
   // TODO: Fix me with proper definition of the fields
-  case class SimpleTypeDescription()
+  case class SimpleTypeDescription(str: String = "")
 
   case class StructureDescription(
     dataTypeId: NodeId,

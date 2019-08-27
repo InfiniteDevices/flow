@@ -2,7 +2,7 @@ package com.eon.opcuapubsubclient.parser
 
 import java.nio.charset.StandardCharsets
 
-import com.eon.opcuapubsubclient.domain.CommonTypes.{NodeId, NodeIdIdentifier}
+import com.eon.opcuapubsubclient.domain.CommonTypes._ //{NodeId, NumericFourByteIdentifier, NumericIdentifier, NumericTwoByteIdentifier, StringIdentifier}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteOrdering.LittleEndian
 import scodec.bits.ByteVector
@@ -27,21 +27,21 @@ object NodeIdParser extends (ByteVector => ParsePosition => (NodeId, ParsePositi
         case 0x00 => // Numeric 2 Byte
           (NodeId(
             namespaceIndex = 0, // See OPC UA Spec version 1.04, Part 6, Page 12, Figure 8
-            NodeIdIdentifier.NumericTwoByteIdentifier(value = byteVector(pos))
+            NumericTwoByteIdentifier(value = byteVector(pos))
           ), parsePosition + 2)
         case 0x01 => // Numeric 4 Byte
           val (nsIndex, pos1) = (byteVector(pos), pos + 1)
           val numericValue = byteVector.slice(from = pos1, until = pos1 + 2).toShort(signed = false, ordering = LittleEndian)
           (NodeId(
             namespaceIndex = nsIndex, // See OPC UA Spec version 1.04, Part 6, Page 13, Figure 9
-            NodeIdIdentifier.NumericFourByteIdentifier(value = numericValue)
+            NumericFourByteIdentifier(value = numericValue)
           ), parsePosition + 4)
         case 0x02 => // Numeric
           val (numericValue, pos1) =
             (byteVector.slice(from = nsIndexPos, until = nsIndexPos + 4).toInt(signed = false, ordering = LittleEndian), nsIndexPos + 4)
           (NodeId(
             namespaceIndex = defaultNsIndex,
-            NodeIdIdentifier.NumericIdentifier(value = numericValue)
+            NumericIdentifier(value = numericValue)
           ), parsePosition + pos1)
         case 0x03 => // String
           // In case of Strings, the length is captured as 4 bytes long
@@ -58,24 +58,24 @@ object NodeIdParser extends (ByteVector => ParsePosition => (NodeId, ParsePositi
             (new String(byteVector.slice(from = pos1, until = pos1 + lengthStr).toArray, StandardCharsets.UTF_8), pos1 + lengthStr)
           (NodeId(
             namespaceIndex = defaultNsIndex, // See OPC UA Spec version 1.04, Part 6, Page 12, Figure 7
-            NodeIdIdentifier.StringIdentifier(value = str)
+            StringIdentifier(value = str)
           ), parsePosition + pos2)
         case 0x04 => // GUID: See OPC UA Spec version 1.04, Part 6, Page 11, Figure 5
           val (guid, nPos) = ParserUtils.parseGuid(byteVector, pos1)
           (NodeId(
             namespaceIndex = defaultNsIndex,
-            NodeIdIdentifier.GuidIdentifier(guid)
+            GuidIdentifier(guid)
           ), nPos) // GUID is always 16 bytes long as defined in the Spec!
         case 0x05 => // Opaque (ByteString) or can be treated as a Vector[Byte]
           val (byteStr, pos1) = ParserUtils.parseByteString(byteVector, nsIndexPos)
           (NodeId(
             namespaceIndex = defaultNsIndex,
-            NodeIdIdentifier.OpaqueIdentifier(value = byteStr)
+            OpaqueIdentifier(value = byteStr)
           ), parsePosition + pos1)
         case _    =>
           (NodeId(
             0, // This does not matter as anyway the NodeId is invalid!
-            NodeIdIdentifier.UnknownIdentifier
+            UnknownIdentifier
           ), parsePosition)
       }
     }

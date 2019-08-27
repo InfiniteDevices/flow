@@ -1,6 +1,6 @@
 package com.eon.opcuapubsubclient.parser.datasetmetadata
 
-import com.eon.opcuapubsubclient.domain.PayloadTypes.{StructureDefinition, StructureDescription, StructureField, StructureType}
+import com.eon.opcuapubsubclient.domain.PayloadTypes._ //{Simple, StructureDefinition, StructureDescription, StructureField, StructureType}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import com.eon.opcuapubsubclient.parser.{NodeIdParser, ParserUtils}
 import scodec.bits.ByteOrdering.LittleEndian
@@ -41,9 +41,9 @@ object StructureDescriptionParser extends (ByteVector => Int => ParsePosition =>
     val (structureType, pos5) = {
       val (result, nPos) = ParserUtils.parseUInt32(byteVector, pos4)
       result match {
-        case 0 => (StructureType.Simple, nPos)
-        case 1 => (StructureType.OptionalFields, nPos)
-        case 2 => (StructureType.Union, nPos)
+        case 0 => (Simple, nPos)
+        case 1 => (OptionalFields, nPos)
+        case 2 => (Union, nPos)
       }
     }
 

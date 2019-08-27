@@ -2,10 +2,13 @@ package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient.UnitSpec
 import com.eon.opcuapubsubclient.UnitSpec.StringAsByteVector
-import com.eon.opcuapubsubclient.domain.PayloadTypes.DataTypeSchemaHeader
+import com.eon.opcuapubsubclient.domain.CommonTypes._
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ConfigVersion, DataValue, KeyValueProperty}
+import com.eon.opcuapubsubclient.domain.PayloadTypes._
 import com.eon.opcuapubsubclient.parser.datasetmetadata.DataSetMetaDataParser
 import org.scalatest.BeforeAndAfterAll
 import scodec.bits.ByteVector
+import play.api.libs.json._
 
 
 // TODO: Fully implement this as a test
@@ -17,6 +20,70 @@ class DataSetMetaDataParserSpec extends UnitSpec with BeforeAndAfterAll {
 
   "it" should "parse DataSetMetaData successfully" in {
     val (dataSetMetaData, pos) = DataSetMetaDataParser(byteVector)(initParsePosition)
+/*
+
+    implicit val nodeIdentifierFmt1 = Json.format[NumericTwoByteIdentifier]
+    implicit val nodeIdentifierFmt2 = Json.format[NumericFourByteIdentifier]
+    implicit val nodeIdentifierFmt3 = Json.format[NumericIdentifier]
+    implicit val nodeIdentifierFmt4 = Json.format[StringIdentifier]
+    implicit val nodeIdentifierFmt5 = Json.format[GuidIdentifier]
+    implicit val nodeIdentifierFmt6 = Json.format[OpaqueIdentifier]
+    implicit val nodeIdentifierFmt7 = Json.format[UnknownIdentifier.type]
+    implicit val nodeIdentifierFmt8 = Json.format[NodeIdIdentifier]
+
+    implicit val simpleStructTypFmt = Json.format[Simple.type]
+    implicit val optFieldsFmt = Json.format[OptionalFields.type]
+    implicit val unionFmt = Json.format[Union.type]
+    implicit val structTypeFmt = Json.format[StructureType]
+
+
+    implicit val nodeIdFmt = Json.format[NodeId]
+    implicit val statusFmt = Json.format[StatusCode]
+    implicit val qNameFmt = Json.format[QualifiedName]
+    implicit val locTxtDFmt = Json.format[LocalizedText]
+    implicit val structFieldFmt = Json.format[StructureField]
+    implicit val structDefFmt = Json.format[StructureDefinition]
+    implicit val simplFmt = Json.format[SimpleTypeDescription]
+    implicit val snumDescFmt = Json.format[EnumDescription]
+    implicit val structFmt = Json.format[StructureDescription]
+    implicit val schemaFmt = Json.format[DataTypeSchemaHeader]
+    implicit val expNodeIdTyp = Json.format[ExpandedNodeIdType]
+
+
+
+    implicit val strType = Json.format[StringType]
+    implicit val guidType = Json.format[GuidType]
+    implicit val int16Type = Json.format[Int16Type]
+    implicit val int32Type = Json.format[Int32Type]
+    implicit val int64Type = Json.format[Int64Type]
+    implicit val uByteTyp = Json.format[UByteType]
+    implicit val qNameType = Json.format[QualifiedNameType]
+    implicit val nodeIdTyp = Json.format[NodeIdType]
+    implicit val locTextTyp = Json.format[LocalizedTextType]
+    implicit val zombType = Json.format[ZombieType]
+    implicit val statusCodeTyp = Json.format[StatusCodeType]
+    implicit val builtInType = Json.format[BuiltInType]
+
+    implicit val simpleFmt = Json.format[SimpleOrder]
+    implicit val higherFmt = Json.format[HigherOrder]
+    implicit val varDataFmt = Json.format[VariantData]
+
+    implicit val varFmt = Json.format[Variant]
+
+
+    implicit val dataValueType = Json.format[DataValue]
+    implicit val dataValTyp = Json.format[DataValueType]
+
+
+
+
+
+
+    implicit val kvFmt = Json.format[KeyValueProperty]
+
+    implicit val optSetFmt = Json.format[OptionSet]
+    implicit val fieldMtdFmt = Json.format[FieldMetaData]
+    implicit val dataSetMetaDataFmt = Json.format[DataSetMetaData] */
 
     assert(dataSetMetaData.dataSetWriterId === 1000)
 
@@ -29,12 +96,37 @@ class DataSetMetaDataParserSpec extends UnitSpec with BeforeAndAfterAll {
 
     // Expecting 5 elements in the StructureDataType
     assert(dataSetMetaData.dataTypeSchemaHeader.structureDataTypes.length === 5)
+    // TODO: Add further assert statements!
 
     assert(dataSetMetaData.dataTypeSchemaHeader.enumDataTypes.isEmpty)
     assert(dataSetMetaData.dataTypeSchemaHeader.simpleDataTypes.isEmpty)
-    println(prettyPrint(dataSetMetaData))
-    println(pos)
 
+    assert(dataSetMetaData.name === "SIEMENS_Dataset")
+
+    val expectedDescription = LocalizedText(locale = None, text = None)
+    assert(dataSetMetaData.description === expectedDescription)
+
+    // Expecting 46 elements in the FieldMetaData
+    assert(dataSetMetaData.fields.length === 46)
+
+
+
+
+
+
+    // Check the ConfigVersion
+    val expectedCfgVersion  = ConfigVersion(
+      majorVersion = 616242276,
+      minorVersion = 616242276
+    )
+    assert(dataSetMetaData.configVersion === expectedCfgVersion)
+
+    // Check the status
+    assert(dataSetMetaData.status === StatusCode(0))
+
+    println(prettyPrint(dataSetMetaData))
+
+    // Finally we should have consumed all the bytes from the input!
     assert(byteVector.length === pos)
   }
 }

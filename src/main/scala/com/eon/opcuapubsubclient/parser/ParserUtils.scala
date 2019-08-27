@@ -3,7 +3,7 @@ package com.eon.opcuapubsubclient.parser
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 
-import com.eon.opcuapubsubclient.domain.CommonTypes.BuiltInType._
+import com.eon.opcuapubsubclient.domain.CommonTypes._
 import com.eon.opcuapubsubclient.domain.CommonTypes._
 import com.eon.opcuapubsubclient.domain.HeaderTypes.ExtensionObjectEncoding._
 import com.eon.opcuapubsubclient.domain.HeaderTypes._

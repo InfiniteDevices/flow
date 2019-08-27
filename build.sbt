@@ -38,7 +38,7 @@ lazy val root = (project in file(".")).
       "org.scodec"         %% "scodec-core"          % "1.11.4",
 
 
-// For all connectors / sources / sinks
+      // For all connectors / sources / sinks
       "org.eclipse.milo"   %  "sdk-client"               % opcClientVersion,
       "com.lightbend.akka" %% "akka-stream-alpakka-mqtt" % mqttClientVersion,
       "io.monix"           %% "monix-kafka-1x"           % monixKafkaClientVersion,
@@ -59,6 +59,7 @@ lazy val root = (project in file(".")).
       "com.typesafe.akka"  %% "akka-http-testkit"    % akkaHttpVersion  % Test,
       "com.typesafe.akka"  %% "akka-testkit"         % akkaVersion      % Test,
       "com.typesafe.akka"  %% "akka-stream-testkit"  % akkaVersion      % Test,
-      "org.scalatest"      %% "scalatest"            % scalaTestVersion % Test
+      "org.scalatest"      %% "scalatest"            % scalaTestVersion % Test,
+      "com.typesafe.play"  %% "play-json"            % "2.7.3"          % Test
     )
   )
