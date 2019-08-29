@@ -157,10 +157,9 @@ object HeaderTypes {
   )
 
   sealed trait ExtensionObjectEncoding
-  object ExtensionObjectEncoding {
-    case class ByteStringEncoding(bytes: Vector[Byte]) extends ExtensionObjectEncoding
-    case class XmlElementEncoding(xmlElement: String) extends ExtensionObjectEncoding
-  }
+  case class ByteStringEncoding(bytes: Vector[Byte]) extends ExtensionObjectEncoding
+  case class XmlElementEncoding(xmlElement: String) extends ExtensionObjectEncoding
+
 
   case class ExtensionObject(
     encodingTypeId: NodeId,

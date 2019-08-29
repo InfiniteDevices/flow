@@ -3,7 +3,7 @@ package com.eon.opcuapubsubclient.parser
 import com.eon.opcuapubsubclient.UnitSpec
 import com.eon.opcuapubsubclient.UnitSpec.StringAsByteVector
 import com.eon.opcuapubsubclient.domain.CommonTypes._
-import com.eon.opcuapubsubclient.domain.HeaderTypes.{ConfigVersion, DataValue, KeyValueProperty}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ByteStringEncoding, ConfigVersion, DataValue, ExtensionObject, ExtensionObjectEncoding, KeyValueProperty, XmlElementEncoding}
 import com.eon.opcuapubsubclient.domain.PayloadTypes._
 import com.eon.opcuapubsubclient.parser.datasetmetadata.DataSetMetaDataParser
 import org.scalatest.BeforeAndAfterAll
@@ -20,7 +20,7 @@ class DataSetMetaDataParserSpec extends UnitSpec with BeforeAndAfterAll {
 
   "it" should "parse DataSetMetaData successfully" in {
     val (dataSetMetaData, pos) = DataSetMetaDataParser(byteVector)(initParsePosition)
-/*
+
 
     implicit val nodeIdentifierFmt1 = Json.format[NumericTwoByteIdentifier]
     implicit val nodeIdentifierFmt2 = Json.format[NumericFourByteIdentifier]
@@ -48,42 +48,52 @@ class DataSetMetaDataParserSpec extends UnitSpec with BeforeAndAfterAll {
     implicit val structFmt = Json.format[StructureDescription]
     implicit val schemaFmt = Json.format[DataTypeSchemaHeader]
     implicit val expNodeIdTyp = Json.format[ExpandedNodeIdType]
+    implicit val cfgVersionType = Json.format[ConfigVersion]
+    implicit val bytEnc = Json.format[ByteStringEncoding]
+    implicit val xmlEnctyp = Json.format[XmlElementEncoding]
+    implicit val extObjEnc = Json.format[ExtensionObjectEncoding]
+    implicit val extObj = Json.format[ExtensionObject]
 
-
+    implicit val dataValueType: OFormat[DataValue] = Json.format[DataValue]
 
     implicit val strType = Json.format[StringType]
+    implicit val dataValFmt: OFormat[DataValueType] = Json.format[DataValueType]
+    implicit val diagTypFmt = Json.format[DiagnosticInfoType]
+    implicit val xmlElemTypFmt = Json.format[XmlElementType]
+    implicit val dtimeTypeFmt = Json.format[DateTimeType]
+    implicit val bytTypFmt = Json.format[ByteType]
+    implicit val extObjTyp = Json.format[ExtensionObjectType]
+    implicit val boolType = Json.format[BooleanType]
+    implicit val varDataFmt: OFormat[VariantData] = Json.format[VariantData]
     implicit val guidType = Json.format[GuidType]
     implicit val int16Type = Json.format[Int16Type]
+    implicit val uint16Type = Json.format[UInt16Type]
+    implicit val uint32Typ = Json.format[UInt32Type]
+    implicit val uint64Type = Json.format[UInt64Type]
+    implicit val byteStrTyp = Json.format[ByteStringType]
     implicit val int32Type = Json.format[Int32Type]
     implicit val int64Type = Json.format[Int64Type]
+    implicit val fltTpyFmt = Json.format[FloatType]
+    implicit val dblTypFmt = Json.format[DoubleType]
     implicit val uByteTyp = Json.format[UByteType]
     implicit val qNameType = Json.format[QualifiedNameType]
     implicit val nodeIdTyp = Json.format[NodeIdType]
     implicit val locTextTyp = Json.format[LocalizedTextType]
     implicit val zombType = Json.format[ZombieType]
     implicit val statusCodeTyp = Json.format[StatusCodeType]
-    implicit val builtInType = Json.format[BuiltInType]
 
-    implicit val simpleFmt = Json.format[SimpleOrder]
-    implicit val higherFmt = Json.format[HigherOrder]
-    implicit val varDataFmt = Json.format[VariantData]
-
-    implicit val varFmt = Json.format[Variant]
-
-
-    implicit val dataValueType = Json.format[DataValue]
-    implicit val dataValTyp = Json.format[DataValueType]
-
-
-
-
+    implicit val varFmt: OFormat[Variant] = Json.format[Variant]
+    implicit val varType: OFormat[VariantType] = Json.format[VariantType]
+    implicit val builtInType: OFormat[BuiltInType] = Json.format[BuiltInType]
+    implicit val simpleFmt: OFormat[SimpleOrder] = Json.format[SimpleOrder]
+    implicit val higherFmt: OFormat[HigherOrder] = Json.format[HigherOrder]
 
 
     implicit val kvFmt = Json.format[KeyValueProperty]
 
     implicit val optSetFmt = Json.format[OptionSet]
     implicit val fieldMtdFmt = Json.format[FieldMetaData]
-    implicit val dataSetMetaDataFmt = Json.format[DataSetMetaData] */
+    implicit val dataSetMetaDataFmt = Json.format[DataSetMetaData]
 
     assert(dataSetMetaData.dataSetWriterId === 1000)
 
