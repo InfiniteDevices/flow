@@ -1,16 +1,24 @@
 package com.eon.opcuapubsubclient.domain
 
 import java.util.UUID
-
 import com.eon.opcuapubsubclient.domain.HeaderTypes.{DataValue, ExtensionObject}
+import play.api.libs.json._
+import julienrf.json.derived
+
 
 object CommonTypes {
 
   sealed trait VariantData
   case class SimpleOrder(rows: Vector[BuiltInType]) extends VariantData
   case class HigherOrder(matrices: Vector[VariantData]) extends VariantData
+  object VariantData {
+    implicit val jsonFormat: OFormat[VariantData] = derived.oformat[VariantData]()
+  }
 
   case class Variant(data: VariantData)
+  object Variant {
+    implicit val jsonFormat: OFormat[Variant] = derived.oformat[Variant]()
+  }
 
   case class StatusCode(value: Long) {
     private val severityMask = 0xC0000000L
@@ -21,6 +29,9 @@ object CommonTypes {
     def isStatusGood: Boolean = (value & severityMask) == severityGood
     def isStatusBad: Boolean = (value & severityMask) == severityBad
     def isStatusUncertain: Boolean = (value & severityMask) == severityUncertain
+  }
+  object StatusCode {
+    implicit val jsonFormat: OFormat[StatusCode] = derived.oformat[StatusCode]()
   }
 
   // ******************************************* BuiltInTypes  ****************************************************** //
@@ -52,7 +63,9 @@ object CommonTypes {
   case class DataValueType       (a: DataValue,       id: Int = 23) extends BuiltInType // FIXME: Wrong type used, fix it later
   case class VariantType         (a: Variant,       id: Int = 24) extends BuiltInType
   case class DiagnosticInfoType  (a: String,        id: Int = 25) extends BuiltInType // FIXME: Wrong type used, fix it later
-
+  object BuiltInType {
+    implicit val jsonFormat: OFormat[BuiltInType] = derived.oformat[BuiltInType]()
+  }
 
   // ******************************************* BuiltInTypes  ****************************************************** //
 
@@ -60,7 +73,14 @@ object CommonTypes {
     locale: Option[String] = None,
     text: Option[String] = None
   )
+  object LocalizedText {
+    implicit val jsonFormat: OFormat[LocalizedText] = derived.oformat[LocalizedText]()
+  }
+
   case class QualifiedName(nameSpaceIndex: Int, name: String)
+  object QualifiedName {
+    implicit val jsonFormat: OFormat[QualifiedName] = derived.oformat[QualifiedName]()
+  }
 
   sealed trait NodeIdIdentifier
   case class NumericTwoByteIdentifier(value: Byte) extends NodeIdIdentifier
@@ -72,8 +92,15 @@ object CommonTypes {
   case object UnknownIdentifier extends NodeIdIdentifier {
     override def toString: String = this.productPrefix
   }
+  object NodeIdIdentifier {
+    implicit val jsonFormat: OFormat[NodeIdIdentifier] = derived.oformat[NodeIdIdentifier]()
+  }
+
   case class NodeId(
     namespaceIndex: Short,
     identifier: NodeIdIdentifier,
   )
+  object NodeId {
+    implicit val jsonFormat: OFormat[NodeId] = derived.oformat[NodeId]()
+  }
 }

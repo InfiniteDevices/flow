@@ -11,10 +11,10 @@ import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMetaData
 class DataSetMetaDataCache extends Actor {
 
   override def receive: Receive = {
-    case _ => run(Map.empty[String, DataSetMetaData])
+    case _ => run(Map.empty[PublisherID, DataSetMetaData])
   }
 
-  def run(cache: Map[String, DataSetMetaData]): Receive = {
+  def run(cache: Map[PublisherID, DataSetMetaData]): Receive = {
     // Mutation messages
     case Evict(key) =>
       context.become(run(cache - key))
@@ -27,6 +27,8 @@ class DataSetMetaDataCache extends Actor {
   }
 }
 object DataSetMetaDataCache {
+
+  type PublisherID = String
 
   sealed trait CacheMessage
   case class Evict(key: String) extends CacheMessage

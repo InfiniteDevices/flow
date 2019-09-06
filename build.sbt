@@ -49,17 +49,11 @@ lazy val root = (project in file(".")).
       // For dealing with Java futures and scala future handling
       "org.scala-lang.modules" %% "scala-java8-compat" % scalaJavaCompactVersion,
       "org.scala-lang.modules" %% "scala-async"        % scalaAsyncVersion,
-      
-      // For dealing with linear optimizer (TODO: Remove this after experimentation)
-      "org.scalanlp" %% "breeze" % "0.13.2",
-      "com.github.vagmcs" %% "optimus" % "2.1.0",
-      "com.github.vagmcs" %% "optimus-solver-oj" % "2.1.0",
-      "com.datumbox" % "lpsolve" % "5.5.2.0",
 
       "com.typesafe.akka"  %% "akka-http-testkit"    % akkaHttpVersion  % Test,
       "com.typesafe.akka"  %% "akka-testkit"         % akkaVersion      % Test,
       "com.typesafe.akka"  %% "akka-stream-testkit"  % akkaVersion      % Test,
-      "org.scalatest"      %% "scalatest"            % scalaTestVersion % Test,
-      "com.typesafe.play"  %% "play-json"            % "2.7.3"          % Test
+      "org.scalatest"      %% "scalatest"            % scalaTestVersion,
+      "org.julienrf"       %% "play-json-derived-codecs" % "6.0.0"
     )
   )

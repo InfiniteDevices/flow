@@ -7,6 +7,8 @@ import com.eon.opcuapubsubclient.domain.HeaderTypes.{ConfigVersion, KeyValueProp
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetFieldEncodings.DataSetFieldEncoding
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType.KeyFrame
+import julienrf.json.derived
+import play.api.libs.json.OFormat
 
 
 object PayloadTypes {
@@ -109,18 +111,22 @@ object PayloadTypes {
   // ******************************************* DataSetMetaData **************************************************** //
 
   sealed trait ValueRank { def value: Int }
-  case object ValueRank {
-    case object OneDimension extends ValueRank {val value: Int = 1}
-    case object OneOrMoreDimensions extends ValueRank {val value: Int = 0}
-    case object Scalar extends ValueRank {val value: Int = -1}
-    case object Any extends ValueRank {val value: Int = -2}
-    case object ScalarOrOneDimension extends ValueRank {val value: Int = -3}
+  case object OneDimension extends ValueRank {val value: Int = 1}
+  case object OneOrMoreDimensions extends ValueRank {val value: Int = 0}
+  case object Scalar extends ValueRank {val value: Int = -1}
+  case object Any extends ValueRank {val value: Int = -2}
+  case object ScalarOrOneDimension extends ValueRank {val value: Int = -3}
+  object ValueRank {
+    implicit val jsonFormat: OFormat[ValueRank] = derived.oformat[ValueRank]()
   }
 
   sealed trait StructureType
   case object Simple extends StructureType
   case object OptionalFields extends StructureType
   case object Union extends StructureType
+  object StructureType {
+    implicit val jsonFormat: OFormat[StructureType] = derived.oformat[StructureType]()
+  }
 
   case class DataSetMetaData(
     dataSetWriterId: Int,
@@ -132,6 +138,9 @@ object PayloadTypes {
     configVersion: ConfigVersion,
     status: StatusCode
   )
+  object DataSetMetaData {
+    implicit val jsonFormat: OFormat[DataSetMetaData] = derived.oformat[DataSetMetaData]()
+  }
 
   case class DataTypeSchemaHeader(
     namespaces: Vector[String] = Vector.empty,
@@ -139,17 +148,30 @@ object PayloadTypes {
     enumDataTypes: Vector[EnumDescription] = Vector.empty,
     simpleDataTypes: Vector[SimpleTypeDescription] = Vector.empty
   )
+  object DataTypeSchemaHeader {
+    implicit val jsonFormat: OFormat[DataTypeSchemaHeader] = derived.oformat[DataTypeSchemaHeader]()
+  }
 
   // TODO: Fix me with proper definition of the fields
   case class EnumDescription(str: String = "")
+  object EnumDescription {
+    implicit val jsonFormat: OFormat[EnumDescription] = derived.oformat[EnumDescription]()
+  }
+
   // TODO: Fix me with proper definition of the fields
   case class SimpleTypeDescription(str: String = "")
+  object SimpleTypeDescription {
+    implicit val jsonFormat: OFormat[SimpleTypeDescription] = derived.oformat[SimpleTypeDescription]()
+  }
 
   case class StructureDescription(
     dataTypeId: NodeId,
     name: QualifiedName,
     structureDefinition: StructureDefinition
   )
+  object StructureDescription {
+    implicit val jsonFormat: OFormat[StructureDescription] = derived.oformat[StructureDescription]()
+  }
 
   case class StructureDefinition(
     defaultEncodingId: NodeId,
@@ -157,6 +179,9 @@ object PayloadTypes {
     structureType: StructureType,
     fields: Vector[StructureField]
   )
+  object StructureDefinition {
+    implicit val jsonFormat: OFormat[StructureDefinition] = derived.oformat[StructureDefinition]()
+  }
 
   case class StructureField(
     name: String,
@@ -167,6 +192,9 @@ object PayloadTypes {
     maxStringLength: Int,
     sOptional: Boolean
   )
+  object StructureField {
+    implicit val jsonFormat: OFormat[StructureField] = derived.oformat[StructureField]()
+  }
 
   case class FieldMetaData(
     name: String,
@@ -180,11 +208,17 @@ object PayloadTypes {
     dataSetFieldId: UUID,
     properties: Vector[KeyValueProperty]
   )
+  object FieldMetaData {
+    implicit val jsonFormat: OFormat[FieldMetaData] = derived.oformat[FieldMetaData]()
+  }
 
   case class OptionSet(
     value: Vector[Byte],
     validBits: Vector[Byte]
   )
+  object OptionSet {
+    implicit val jsonFormat: OFormat[OptionSet] = derived.oformat[OptionSet]()
+  }
 
   // ******************************************* DataSetMetaData **************************************************** //
 }

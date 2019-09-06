@@ -4,7 +4,9 @@ import java.util.UUID
 
 import com.eon.opcuapubsubclient.domain.CommonTypes._
 import com.eon.opcuapubsubclient.domain.PayloadTypes._
+import julienrf.json.derived
 import org.joda.time.DateTime
+import play.api.libs.json.OFormat
 
 
 object HeaderTypes {
@@ -155,16 +157,24 @@ object HeaderTypes {
     messageNonce: Byte = 0,
     securityFooterSize: Int = 0
   )
+  object SecurityHeader {
+    implicit val jsonFormat: OFormat[SecurityHeader] = derived.oformat[SecurityHeader]()
+  }
 
   sealed trait ExtensionObjectEncoding
   case class ByteStringEncoding(bytes: Vector[Byte]) extends ExtensionObjectEncoding
   case class XmlElementEncoding(xmlElement: String) extends ExtensionObjectEncoding
-
+  object ExtensionObjectEncoding {
+    implicit val jsonFormat: OFormat[ExtensionObjectEncoding] = derived.oformat[ExtensionObjectEncoding]()
+  }
 
   case class ExtensionObject(
     encodingTypeId: NodeId,
     encodedBody: ExtensionObjectEncoding
   )
+  object ExtensionObject {
+    implicit val jsonFormat: OFormat[ExtensionObject] = derived.oformat[ExtensionObject]()
+  }
 
   case class DataValue(
     value: Variant,
@@ -174,14 +184,23 @@ object HeaderTypes {
     serverTime: Long, // TODO: Need to be a Datetime type
     serverPicoseconds: Int
   )
+  object DataValue {
+    implicit val jsonFormat: OFormat[DataValue] = derived.oformat[DataValue]()
+  }
 
   case class KeyValueProperty(
     qName: QualifiedName,
     value: Variant
   )
+  object KeyValueProperty {
+    implicit val jsonFormat: OFormat[KeyValueProperty] = derived.oformat[KeyValueProperty]()
+  }
 
   case class ConfigVersion(
     majorVersion: Long,
     minorVersion: Long
   )
+  object ConfigVersion {
+    implicit val jsonFormat: OFormat[ConfigVersion] = derived.oformat[ConfigVersion]()
+  }
 }
