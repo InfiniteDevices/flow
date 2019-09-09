@@ -27,7 +27,6 @@ lazy val root = (project in file(".")).
     ),
     name := "opc-client-stream",
     libraryDependencies ++= Seq(
-      "com.typesafe" % "config" % "1.2.1",
       "joda-time"           % "joda-time"            % jodaTimeVersion,
 
       // The main parser library that is used to read the bits and bytes

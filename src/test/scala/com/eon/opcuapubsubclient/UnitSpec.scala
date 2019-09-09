@@ -1,6 +1,5 @@
 package com.eon.opcuapubsubclient
 
-import com.eon.opcuapubsubclient.config.AppConfig
 import org.scalatest._
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.{ParsePosition, startParsePosition}
 import scodec.bits.ByteVector
@@ -10,7 +9,6 @@ abstract class UnitSpec extends FlatSpec with Matchers with OptionValues with In
 
   // For all unit tests, we use the application.test.conf configuration
   System.setProperty("env", "test")
-  val appCfg: AppConfig = AppConfig.load()
   val initParsePosition: ParsePosition = startParsePosition
 
   def toByteArray(str: String): Array[Byte] =
@@ -106,7 +104,7 @@ abstract class UnitSpec extends FlatSpec with Matchers with OptionValues with In
 
 
   /**
-    * Pretty prints a Scala value similar to its source represention.
+    * Pretty prints a Scala value similar to its source representation.
     * Particularly useful for case classes.
     * @param a - The value to pretty print.
     * @param indentSize - Number of spaces for each indent.
