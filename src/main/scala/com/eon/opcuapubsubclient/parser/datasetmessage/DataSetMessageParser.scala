@@ -11,6 +11,7 @@ import scodec.bits.ByteVector
 
 import scala.annotation.tailrec
 
+
 object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(Vector[DataSetMessage], ParsePosition)]) {
 
   override def apply(v1: ByteVector): ParsePosition => DSMPH => V[(Vector[DataSetMessage], ParsePosition)] =
@@ -61,14 +62,17 @@ object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(
       (DataSetMessageKeyFrame(), pos1)
     }
 
+    // TODO: Implement!
     def dataSetDeltaFrame(messageSize: Int, pos: ParsePosition): (DataSetMessageDeltaFrame, ParsePosition) = {
       (DataSetMessageDeltaFrame(), pos)
     }
 
+    // TODO: Implement!
     def dataSetEvent(messageSize: Int, pos: ParsePosition): (DataSetMessageEvent, ParsePosition) = {
       (DataSetMessageEvent(), pos)
     }
 
+    // TODO: Implement!
     def dataSetKeepAlive(messageSize: Int, pos: ParsePosition): (DataSetMessageKeepAlive, ParsePosition) = {
       DataSetMessageKeepAliveParser(byteVector)(0)(pos) // TODO: What about the MessageSequenceNumber, Here I'm using 0 as default and this is wrong!
     }

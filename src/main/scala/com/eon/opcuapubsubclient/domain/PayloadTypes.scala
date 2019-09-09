@@ -199,7 +199,7 @@ object PayloadTypes {
   case class FieldMetaData(
     name: String,
     description: LocalizedText,
-    optionSet: OptionSet,
+    fieldFlags: OptionSet,
     builtInType: Int,
     dataType: NodeId,
     valueRank: Int,
