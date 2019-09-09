@@ -1,11 +1,11 @@
 package com.eon.opcuapubsubclient.parser.datasetmessage
 
-import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessage
+import com.eon.opcuapubsubclient.domain.PayloadTypes.{DataSetMessage, DataSetMessageHeader}
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame.{DataSetMessageDeltaFrame, DataSetMessageEvent, DataSetMessageKeepAlive, DataSetMessageKeyFrame}
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType.{DeltaFrame, Event, KeepAlive, KeyFrame}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import com.eon.opcuapubsubclient.parser.ParserUtils
-import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader.{ DataSetMessagePayloadHeader => DSMPH }
+import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader.{DataSetMessagePayloadHeader => DSMPH}
 import com.eon.opcuapubsubclient.{V, validated}
 import scodec.bits.ByteVector
 
@@ -45,7 +45,7 @@ object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(
     def toDataSetMessage(messageSize: Int, pos: ParsePosition): (DataSetMessage, ParsePosition) = {
       val (dataSetMsgHeader, pos1) = DataSetMessageHeaderParser(byteVector)(pos)
       val (dataSetMsgFrame, pos2) = dataSetMsgHeader.dataSetFlags2.dataSetMessageType match {
-        case KeyFrame => dataSetKeyFrame(messageSize, pos1)
+        case KeyFrame => dataSetKeyFrame(dataSetMsgHeader, pos1) // This is the default as mentioned in the spec!
         case DeltaFrame => dataSetDeltaFrame(messageSize, pos1)
         case Event => dataSetEvent(messageSize, pos1)
         case KeepAlive => dataSetKeepAlive(messageSize, pos1)
@@ -57,14 +57,13 @@ object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(
     }
 
     // TODO: Implement!
-    def dataSetKeyFrame(messageSize: Int, pos: ParsePosition): (DataSetMessageKeyFrame, ParsePosition) = {
-      val (fieldCount, pos1) = ParserUtils.parseUInt16(byteVector, pos)
-      (DataSetMessageKeyFrame(), pos1)
+    def dataSetKeyFrame(dataSetMsgHeader: DataSetMessageHeader, pos: ParsePosition): (DataSetMessageKeyFrame, ParsePosition) = {
+      DataSetMessageKeyFrameParser(byteVector)(dataSetMsgHeader)(pos)
     }
 
     // TODO: Implement!
     def dataSetDeltaFrame(messageSize: Int, pos: ParsePosition): (DataSetMessageDeltaFrame, ParsePosition) = {
-      (DataSetMessageDeltaFrame(), pos)
+      DataSetMessageDeltaFrameParser(byteVector)(pos)
     }
 
     // TODO: Implement!

@@ -54,12 +54,10 @@ object PayloadTypes {
 
   object DataSetFieldEncodings {
     sealed trait DataSetFieldEncoding
-    case object DataSetFieldEncoding {
-      case object VariantFieldEncoding  extends DataSetFieldEncoding
-      case object RawFieldEncoding      extends DataSetFieldEncoding
-      case object ValueFieldEncoding    extends DataSetFieldEncoding
-      case object ReservedFieldEncoding extends DataSetFieldEncoding
-    }
+    case object VariantFieldEncoding  extends DataSetFieldEncoding
+    case object RawFieldEncoding      extends DataSetFieldEncoding
+    case object ValueFieldEncoding    extends DataSetFieldEncoding
+    case object ReservedFieldEncoding extends DataSetFieldEncoding
   }
 
   // ******************************************* DataSetMessage  **************************************************** //
