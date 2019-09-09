@@ -27,21 +27,11 @@ lazy val root = (project in file(".")).
     ),
     name := "opc-client-stream",
     libraryDependencies ++= Seq(
-      "io.monix"           %% "monix"                % monixVersion,
-      "com.typesafe.akka"  %% "akka-http"            % akkaHttpVersion,
-      "com.typesafe.akka"  %% "akka-http-spray-json" % akkaHttpVersion,
-      "com.typesafe.akka"  %% "akka-http-xml"        % akkaHttpVersion,
-      "com.typesafe.akka"  %% "akka-stream"          % akkaVersion,
       "joda-time"           % "joda-time"            % jodaTimeVersion,
 
+      // The main library used to read bits and bytes
       "org.scodec"         %% "scodec-bits"          % "1.1.6",
       "org.scodec"         %% "scodec-core"          % "1.11.4",
-
-
-      // For all connectors / sources / sinks
-      "org.eclipse.milo"   %  "sdk-client"               % opcClientVersion,
-      "com.lightbend.akka" %% "akka-stream-alpakka-mqtt" % mqttClientVersion,
-      "io.monix"           %% "monix-kafka-1x"           % monixKafkaClientVersion,
 
       // For dealing with logging
       "org.wvlet.airframe" %% "airframe-log"         % airframeLogVersion,
