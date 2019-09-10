@@ -1,16 +1,15 @@
 package com.eon.opcuapubsubclient.parser.datasetmessage
 
-import com.eon.opcuapubsubclient.domain.PayloadTypes.{DataSetMessage, DataSetMessageHeader}
-import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame.{DataSetMessageDeltaFrame, DataSetMessageEvent, DataSetMessageKeepAlive, DataSetMessageKeyFrame}
-import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType.{DeltaFrame, Event, KeepAlive, KeyFrame}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.{ DataSetMessage, DataSetMessageHeader }
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame.{ DataSetMessageDeltaFrame, DataSetMessageEvent, DataSetMessageKeepAlive, DataSetMessageKeyFrame }
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType.{ DeltaFrame, Event, KeepAlive, KeyFrame }
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import com.eon.opcuapubsubclient.parser.ParserUtils
-import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader.{DataSetMessagePayloadHeader => DSMPH}
-import com.eon.opcuapubsubclient.{V, validated}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader.{ DataSetMessagePayloadHeader => DSMPH }
+import com.eon.opcuapubsubclient.{ V, validated }
 import scodec.bits.ByteVector
 
 import scala.annotation.tailrec
-
 
 object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(Vector[DataSetMessage], ParsePosition)]) {
 
@@ -52,8 +51,7 @@ object DataSetMessageParser extends (ByteVector => ParsePosition => DSMPH => V[(
       }
       (DataSetMessage(
         dataSetMsgHeader,
-        dataSetMsgFrame
-      ), pos2)
+        dataSetMsgFrame), pos2)
     }
 
     // TODO: Implement!

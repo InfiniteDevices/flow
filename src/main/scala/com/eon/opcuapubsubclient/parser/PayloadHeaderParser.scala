@@ -2,7 +2,7 @@ package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient._
 import com.eon.opcuapubsubclient.domain.HeaderTypes.NetworkMessageTypes.NetworkMessageType
-import com.eon.opcuapubsubclient.domain.HeaderTypes.{NetworkMessageTypes, PayloadHeader}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ NetworkMessageTypes, PayloadHeader }
 import com.eon.opcuapubsubclient.domain.HeaderTypes.PayloadHeader._
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DiscoveryRequestMessageTypes
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DiscoveryResponseMessageTypes._
@@ -14,8 +14,7 @@ import scala.annotation.tailrec
 // TODO: Chunking is not yet implemented!
 object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePosition => V[(PayloadHeader, ParsePosition)]) {
 
-  override def apply(byteVector: ByteVector): NetworkMessageType => ParsePosition => V[(PayloadHeader, ParsePosition)]= {
-    msgType => parsePosition => validated { parsePayloadHeader(byteVector, msgType, parsePosition) }
+  override def apply(byteVector: ByteVector): NetworkMessageType => ParsePosition => V[(PayloadHeader, ParsePosition)] = { msgType => parsePosition => validated { parsePayloadHeader(byteVector, msgType, parsePosition) }
   }
 
   def parsePayloadHeader(byteVector: ByteVector, msgType: NetworkMessageType, parsePosition: ParsePosition): (PayloadHeader, ParsePosition) = {
@@ -86,8 +85,7 @@ object PayloadHeaderParser extends (ByteVector => NetworkMessageType => ParsePos
           val msg = s"As per the Spec., we should have at least one DataSetMessage in the Payload, " +
             s"but seems this is not the case count in the DataSet PayloadHeader is = $count and is not valid!"
           (InvalidPayloadHeader(msg), pos1)
-        }
-        else {
+        } else {
           val (dataSetWriterIdSeq, newPos) = dataSetWriterIds(0, pos1, Vector.empty)
           (DataSetMessagePayloadHeader(count, dataSetWriterIdSeq), newPos)
         }

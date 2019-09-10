@@ -2,7 +2,7 @@ package com.eon.opcuapubsubclient.parser.datasetmetadata
 
 import com.eon.opcuapubsubclient.domain.PayloadTypes.FieldMetaData
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
-import com.eon.opcuapubsubclient.parser.{NodeIdParser, OptionSetParser, ParserUtils}
+import com.eon.opcuapubsubclient.parser.{ NodeIdParser, OptionSetParser, ParserUtils }
 import scodec.bits.ByteVector
 
 import scala.annotation.tailrec
@@ -41,8 +41,7 @@ object FieldMetaDataParser extends (ByteVector => Int => ParsePosition => (Vecto
           arrayDimensions,
           maxStringLength,
           dataSetFieldId,
-          kvProperties
-        )
+          kvProperties)
 
         fieldMetaData(size - 1, pos10, acc :+ data)
       } else (acc, pos)

@@ -1,7 +1,7 @@
 package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.HeaderTypes.{ExtendedFlags1, ExtendedFlags2, ExtendedNetworkMessageHeader}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ ExtendedFlags1, ExtendedFlags2, ExtendedNetworkMessageHeader }
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 
@@ -28,7 +28,6 @@ object ExtendedNetworkMsgHeaderParser extends (ByteVector => ExtendedFlags1 => E
     (ExtendedNetworkMessageHeader(
       someTimestamp,
       somePicoSeconds,
-      promotedFields
-    ), pos3)
+      promotedFields), pos3)
   }
 }

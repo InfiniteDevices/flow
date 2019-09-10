@@ -2,7 +2,7 @@ package com.eon.opcuapubsubclient.parser.datasetmetadata
 
 import com.eon.opcuapubsubclient.domain.PayloadTypes._ //{Simple, StructureDefinition, StructureDescription, StructureField, StructureType}
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
-import com.eon.opcuapubsubclient.parser.{NodeIdParser, ParserUtils}
+import com.eon.opcuapubsubclient.parser.{ NodeIdParser, ParserUtils }
 import scodec.bits.ByteOrdering.LittleEndian
 import scodec.bits.ByteVector
 
@@ -70,8 +70,7 @@ object StructureDescriptionParser extends (ByteVector => Int => ParsePosition =>
           valueRank,
           arrayDimensions,
           maxStringLength,
-          isOptional
-        ), pos7)
+          isOptional), pos7)
       }
 
       if (size > 0) {
@@ -88,13 +87,11 @@ object StructureDescriptionParser extends (ByteVector => Int => ParsePosition =>
       defaultEncodingId,
       baseDataType,
       structureType,
-      structureFieldsParsed
-    )
+      structureFieldsParsed)
 
     (StructureDescription(
       dataTypeId,
       qName,
-      structureDefinition
-    ), pos7)
+      structureDefinition), pos7)
   }
 }

@@ -1,10 +1,9 @@
 package com.eon.opcuapubsubclient.parser
 
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.HeaderTypes.{ExtendedFlags1, ExtendedFlags2, NetworkMessageHeader, NetworkMessageTypes, PublisherIDTypes}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ ExtendedFlags1, ExtendedFlags2, NetworkMessageHeader, NetworkMessageTypes, PublisherIDTypes }
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
-import scodec.bits.{BitVector, ByteVector}
-
+import scodec.bits.{ BitVector, ByteVector }
 
 object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(NetworkMessageHeader, ParsePosition)]) {
 
@@ -19,8 +18,7 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
       publisherIdEnabled = bitVector.get(3),
       groupHeaderEnabled = bitVector.get(2),
       payloadHeaderEnabled = bitVector.get(1),
-      extendedFlags1Enabled = bitVector.get(0)
-    ), position + 1)
+      extendedFlags1Enabled = bitVector.get(0)), position + 1)
   }
 
   def extendedFlags1(bitVector: BitVector, position: Int): (ExtendedFlags1, Int) = {
@@ -40,8 +38,7 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
       securityEnabled = bitVector(3),
       timeStampEnabled = bitVector(2),
       picoSecondsEnabled = bitVector(1),
-      extendedFlags2Enabled = bitVector(0)
-    ), position + 1)
+      extendedFlags2Enabled = bitVector(0)), position + 1)
   }
 
   def extendedFlags2(bitVector: BitVector, position: Int): (ExtendedFlags2, Int) = {
@@ -55,8 +52,7 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
     (ExtendedFlags2(
       isChunkMessage = bitVector(7),
       promotedFieldsEnabled = bitVector(6),
-      networkMessageType
-    ), position + 1)
+      networkMessageType), position + 1)
   }
 
   def parseNetworkMessageHeader(byteVector: ByteVector, parsePosition: Int = 0): (NetworkMessageHeader, Int) = {
@@ -85,7 +81,6 @@ object NetworkMessageHeaderParser extends (ByteVector => ParsePosition => V[(Net
       publisherId = somePublisherId,
       dataSetClassId = someDataSetClassId,
       extendedFlags1 = extFlags1,
-      extendedFlags2 = extFlags2
-    ), pos5)
+      extendedFlags2 = extFlags2), pos5)
   }
 }

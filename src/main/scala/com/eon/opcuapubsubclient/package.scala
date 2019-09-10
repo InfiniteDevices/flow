@@ -4,7 +4,6 @@ import com.eon.opcuapubsubclient.domain.errors._
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import scodec.bits.ByteVector
 
-
 package object opcuapubsubclient {
 
   type V[+R] = Either[ParseError, R]

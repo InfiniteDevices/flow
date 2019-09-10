@@ -20,7 +20,6 @@ object OptionSetParser extends (ByteVector => ParsePosition => (OptionSet, Parse
     val (validBits, pos4) = (sliceToUByte(byteVector, parsePosition, pos3 + validBitLength), pos3 + validBitLength)
     (OptionSet(
       value,
-      validBits
-    ), pos4)
+      validBits), pos4)
   }
 }

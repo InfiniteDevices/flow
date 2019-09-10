@@ -2,12 +2,12 @@ package com.eon.opcuapubsubclient.parser
 
 import OpcUAPubSubParser._
 import com.eon.opcuapubsubclient._
-import com.eon.opcuapubsubclient.domain.HeaderTypes.{GroupHeader, SecurityHeader}
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ GroupHeader, SecurityHeader }
 import scodec.bits.ByteVector
 
 /**
-  * TODO: Scaladoc
-  */
+ * TODO: Scaladoc
+ */
 class OpcUAPubSubParser {
 
   def parse(bytes: Seq[Byte]): Unit = {

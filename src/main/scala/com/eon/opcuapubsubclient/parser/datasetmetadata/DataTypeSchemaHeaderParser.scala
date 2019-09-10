@@ -1,8 +1,8 @@
 package com.eon.opcuapubsubclient.parser.datasetmetadata
 
-import com.eon.opcuapubsubclient.domain.PayloadTypes.{DataTypeSchemaHeader, EnumDescription, SimpleTypeDescription}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.{ DataTypeSchemaHeader, EnumDescription, SimpleTypeDescription }
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
-import com.eon.opcuapubsubclient.parser.{ParserUtils, SimpleTypeDescriptionParser}
+import com.eon.opcuapubsubclient.parser.{ ParserUtils, SimpleTypeDescriptionParser }
 import scodec.bits.ByteVector
 
 import scala.annotation.tailrec
@@ -38,7 +38,7 @@ object DataTypeSchemaHeaderParser extends (ByteVector => ParsePosition => (DataT
     // Using the size, populate the EnumDescription sequence
     val (enumDataTypeSize, pos5) = ParserUtils.parseUInt32(byteVector, pos4)
     val (enumDataTypes, pos6) =
-      if(enumDataTypeSize != -1) EnumDescriptionParser(byteVector)(pos5)
+      if (enumDataTypeSize != -1) EnumDescriptionParser(byteVector)(pos5)
       else (Vector.empty[EnumDescription], pos5)
 
     // 5. Get the size of the SimpleTypeDescription array which is of type Int32
@@ -46,14 +46,13 @@ object DataTypeSchemaHeaderParser extends (ByteVector => ParsePosition => (DataT
     // Using the size, populate the SimpleTypeDescription sequence
     val (simpleDataTypeSize, pos7) = ParserUtils.parseUInt32(byteVector, pos6)
     val (simpleDataTypes, pos8) =
-      if(simpleDataTypeSize != -1) SimpleTypeDescriptionParser(byteVector)(pos7)
+      if (simpleDataTypeSize != -1) SimpleTypeDescriptionParser(byteVector)(pos7)
       else (Vector.empty[SimpleTypeDescription], pos7)
 
     (DataTypeSchemaHeader(
       namespaceSeq,
       structureDataTypes,
       enumDataTypes,
-      simpleDataTypes
-    ), pos8)
+      simpleDataTypes), pos8)
   }
 }

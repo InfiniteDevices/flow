@@ -6,11 +6,10 @@ import java.util.UUID
 import com.eon.opcuapubsubclient.domain.CommonTypes._
 import com.eon.opcuapubsubclient.domain.HeaderTypes._
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
-import scodec.bits.ByteOrdering.{BigEndian, LittleEndian}
-import scodec.bits.{BitVector, ByteVector}
+import scodec.bits.ByteOrdering.{ BigEndian, LittleEndian }
+import scodec.bits.{ BitVector, ByteVector }
 
 import scala.annotation.tailrec
-
 
 object ParserUtils {
 
@@ -86,12 +85,12 @@ object ParserUtils {
   }
 
   /**
-    * OPC UA Spec., version 1.04, Part 4, Page 160, Chapter 7.38
-    * @param byteVector
-    * @param from
-    * @return
-    * // FIXME: Use a DateTime type as UTC rather than an Long
-    */
+   * OPC UA Spec., version 1.04, Part 4, Page 160, Chapter 7.38
+   * @param byteVector
+   * @param from
+   * @return
+   * // FIXME: Use a DateTime type as UTC rather than an Long
+   */
   def parseVersionTime(byteVector: ByteVector, from: ParsePosition): (Int, ParsePosition) = {
     parseUInt32(byteVector, from)
   }
@@ -143,25 +142,22 @@ object ParserUtils {
     if ((mask & 1) == 1) { // Contains just the Locale
       val (locale, nPos) = parseString(byteVector, pos1)
       (LocalizedText(locale = Some(locale)), nPos)
-    }
-    else if ((mask & 2) == 2) { // Contains just the Text
+    } else if ((mask & 2) == 2) { // Contains just the Text
       val (text, nPos) = parseString(byteVector, pos1)
       (LocalizedText(text = Some(text)), nPos)
-    }
-    else if ((mask & 3) == 3) { // Contains both Locale and Text
+    } else if ((mask & 3) == 3) { // Contains both Locale and Text
       val (locale, nPos1) = parseString(byteVector, pos1)
       val (text, nPos2) = parseString(byteVector, nPos1)
       (LocalizedText(locale = Some(locale), text = Some(text)), nPos2)
-    }
-    else (LocalizedText(), pos1)
+    } else (LocalizedText(), pos1)
   }
 
   /**
-    * OPC UA Spec Part 6, version 1.04, Page 15, Chapter 5.2.2.15, Table 14
-    * @param byteVector
-    * @param from
-    * @return
-    */
+   * OPC UA Spec Part 6, version 1.04, Page 15, Chapter 5.2.2.15, Table 14
+   * @param byteVector
+   * @param from
+   * @return
+   */
   def parseExtensionObject(byteVector: ByteVector, from: ParsePosition): (ExtensionObject, ParsePosition) = {
     val (encodingTypeId, pos1) = parseNodeId(byteVector, from)
     val (encoding, pos2) = parseByte(byteVector, pos1)
@@ -169,65 +165,61 @@ object ParserUtils {
       case 0 =>
         (
           ExtensionObject(encodingTypeId, ByteStringEncoding(Vector.empty)),
-          pos2
-        )
+          pos2)
       case 1 =>
         val (byteStr, pos3) = parseByteString(byteVector, pos2)
         (
           ExtensionObject(encodingTypeId, ByteStringEncoding(byteStr)),
-          pos3
-        )
+          pos3)
       case 2 =>
         val (xmlElement, pos3) = parseXmlElement(byteVector, pos2)
         (
           ExtensionObject(encodingTypeId, XmlElementEncoding(xmlElement)),
-          pos3
-        )
+          pos3)
     }
   }
 
   /**
-    * OPC UA Spec Part 6, version 1.04, Page 17, Chapter 5.2.2.17, Table 16
-    * @param byteVector
-    * @param from
-    * @return
-    */
+   * OPC UA Spec Part 6, version 1.04, Page 17, Chapter 5.2.2.17, Table 16
+   * @param byteVector
+   * @param from
+   * @return
+   */
   def parseDataValue(byteVector: ByteVector, from: ParsePosition): (DataValue, ParsePosition) = {
     val (byte, pos1) = parseByte(byteVector, from)
     val mask = byte & 0xFF
 
     val (variant, pos2) = if ((mask & 0x01) != 0) parseVariant(byteVector, pos1)
-      else (Variant(SimpleOrder(Vector.empty)), pos1)
+    else (Variant(SimpleOrder(Vector.empty)), pos1)
     val (status, pos3) = if ((mask & 0x02) != 0) parseStatusCode(byteVector, pos2)
-      else (StatusCode(0), pos2) // TODO: Is this OKAY for the default status code?
+    else (StatusCode(0), pos2) // TODO: Is this OKAY for the default status code?
     val (sourceTime, pos4) = if ((mask & 0x04) != 0) parseDateTime(byteVector, pos3)
-      else (0L, pos3) // TODO: DateTime need to be fixed?
+    else (0L, pos3) // TODO: DateTime need to be fixed?
     val (sourcePicoseconds, pos5) = if ((mask & 0x10) != 0) parseUInt16(byteVector, pos4)
-      else (0, pos4)
+    else (0, pos4)
     val (serverTime, pos6) = if ((mask & 0x08) != 0) parseDateTime(byteVector, pos5)
-      else (0L, pos5)
+    else (0L, pos5)
     val (serverPicoseconds, pos7) = if ((mask & 0x20) != 0) parseUInt16(byteVector, pos6)
-      else (0, pos6)
+    else (0, pos6)
 
     (
       DataValue(variant, status, sourceTime, sourcePicoseconds, serverTime, serverPicoseconds),
-      pos7
-    )
+      pos7)
   }
 
   /**
-    * Implemented according to the OPC UA Spec version 1.04,
-    * Part 6, Page number 16, Chapter 5.2.2.16 Table 15 - Variant Binary DataEncoding
-    *
-    * FIXME: Ids 26 to 31 are not yet supported, but still the spec says that Decoders should
-    * support these Ids and should assume that the Value is a ByteString
-    *
-    * TODO: Refactor without nested if else statements
-    *
-    * @param byteVector The incoming bytes
-    * @param parsePosition The starting position in the ByteVector from where the parsing should happen
-    * @return
-    */
+   * Implemented according to the OPC UA Spec version 1.04,
+   * Part 6, Page number 16, Chapter 5.2.2.16 Table 15 - Variant Binary DataEncoding
+   *
+   * FIXME: Ids 26 to 31 are not yet supported, but still the spec says that Decoders should
+   * support these Ids and should assume that the Value is a ByteString
+   *
+   * TODO: Refactor without nested if else statements
+   *
+   * @param byteVector The incoming bytes
+   * @param parsePosition The starting position in the ByteVector from where the parsing should happen
+   * @return
+   */
   def parseVariant(byteVector: ByteVector, parsePosition: ParsePosition): (Variant, ParsePosition) = {
     val (encodingMask, pos1) = parseByte(byteVector, parsePosition)
     val buildInTypeId = encodingMask & 0x3F
@@ -237,7 +229,7 @@ object ParserUtils {
         SimpleOrder(flat)
       } else {
         val (Vector(dim), rest) = dims.splitAt(1)
-        val subs = flat.grouped(flat.length/dim).map(a => unflatten(a, rest)).toVector
+        val subs = flat.grouped(flat.length / dim).map(a => unflatten(a, rest)).toVector
         HigherOrder(subs)
       }
     }

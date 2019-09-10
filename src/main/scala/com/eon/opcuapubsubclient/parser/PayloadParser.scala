@@ -5,7 +5,7 @@ import com.eon.opcuapubsubclient._
 import com.eon.opcuapubsubclient.domain.HeaderTypes.NetworkMessageTypes
 import com.eon.opcuapubsubclient.domain.HeaderTypes.NetworkMessageTypes.NetworkMessageType
 import com.eon.opcuapubsubclient.domain.PayloadTypes.Payload
-import com.eon.opcuapubsubclient.domain.PayloadTypes.Payload.{DiscoveryResponsePayload, InvalidPayload}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.Payload.{ DiscoveryResponsePayload, InvalidPayload }
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import com.eon.opcuapubsubclient.parser.datasetmetadata.DataSetMetaDataParser
 import scodec.bits.ByteVector

@@ -37,7 +37,6 @@ object DataSetMetaDataParser extends (ByteVector => ParsePosition => (DataSetMet
       fieldMetaData,
       dataSetClassId,
       configVersion,
-      status
-    ), pos9)
+      status), pos9)
   }
 }

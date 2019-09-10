@@ -1,13 +1,12 @@
 package com.eon.opcuapubsubclient.parser.datasetmessage
 
-import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType.{DeltaFrame, Event, KeepAlive, KeyFrame}
-import com.eon.opcuapubsubclient.domain.PayloadTypes.{DataSetFlags1, DataSetFlags2, DataSetMessageHeader}
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType.{ DeltaFrame, Event, KeepAlive, KeyFrame }
+import com.eon.opcuapubsubclient.domain.PayloadTypes.{ DataSetFlags1, DataSetFlags2, DataSetMessageHeader }
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
 import com.eon.opcuapubsubclient.parser.ParserUtils
-import scodec.bits.{BitVector, ByteVector}
+import scodec.bits.{ BitVector, ByteVector }
 import com.eon.opcuapubsubclient._
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetFieldEncodings._
-
 
 object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataSetMessageHeader, ParsePosition)) {
 
@@ -29,8 +28,7 @@ object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataS
       picoSeconds,
       status,
       majorCfgVersion,
-      minorCfgVersion
-    ), pos8)
+      minorCfgVersion), pos8)
   }
 
   def dataSetFlag1(bitV: BitVector, from: ParsePosition): (DataSetFlags1, ParsePosition) = {
@@ -48,18 +46,17 @@ object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataS
       statusEnabled = bitVector(4),
       cfgMajorVersionEnabled = bitVector(5),
       cfgMinorVersionEnabled = bitVector(6),
-      dataSetFlags2Enabled = bitVector(7)
-    ), from + 1)
+      dataSetFlags2Enabled = bitVector(7)), from + 1)
   }
 
   /**
-    * Spec on Page 70 says that the DataSetFlags2 shall be omitted if bit 7 of the DataSetFlags1 is false
-    * If the field is omitted, the Subscriber shall handle the related bits as false
-    * Asked this as a question in the OPC Discussion Forum!
-    * https://opcfoundation.org/forum/opc-ua-standard/datasetmessage-header-parsing-understanding-the-meaning-from-spec/#p1930
-    * If this field is omitted, then it means that there is no byte representing the DataSetFlags2 at all.
-    * So we return a default value!
-    */
+   * Spec on Page 70 says that the DataSetFlags2 shall be omitted if bit 7 of the DataSetFlags1 is false
+   * If the field is omitted, the Subscriber shall handle the related bits as false
+   * Asked this as a question in the OPC Discussion Forum!
+   * https://opcfoundation.org/forum/opc-ua-standard/datasetmessage-header-parsing-understanding-the-meaning-from-spec/#p1930
+   * If this field is omitted, then it means that there is no byte representing the DataSetFlags2 at all.
+   * So we return a default value!
+   */
   def dataSetFlag2(bitV: BitVector, from: ParsePosition, isEnabled: Boolean): (DataSetFlags2, ParsePosition) = {
     if (isEnabled) {
       val bitVector = bitV.reverse
@@ -72,8 +69,7 @@ object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataS
       (DataSetFlags2(
         dataSetMsgTyp,
         tsEnabled = bitVector(4),
-        picoSecondsIncluded = bitVector(5)
-      ), from + 1)
+        picoSecondsIncluded = bitVector(5)), from + 1)
     } else (DataSetFlags2(), from) // Use the default as per the Spec!
   }
 

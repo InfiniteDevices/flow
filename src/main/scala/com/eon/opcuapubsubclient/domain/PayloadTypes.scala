@@ -2,27 +2,24 @@ package com.eon.opcuapubsubclient.domain
 
 import java.util.UUID
 
-import com.eon.opcuapubsubclient.domain.CommonTypes.{LocalizedText, NodeId, QualifiedName, StatusCode}
-import com.eon.opcuapubsubclient.domain.HeaderTypes.{ConfigVersion, KeyValueProperty}
+import com.eon.opcuapubsubclient.domain.CommonTypes.{ LocalizedText, NodeId, QualifiedName, StatusCode }
+import com.eon.opcuapubsubclient.domain.HeaderTypes.{ ConfigVersion, KeyValueProperty }
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetFieldEncodings.DataSetFieldEncoding
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageTypes.DataSetMessageType.KeyFrame
 import julienrf.json.derived
 import play.api.libs.json.OFormat
 
-
 object PayloadTypes {
 
   sealed trait Payload
   object Payload {
     case class DataSetMessagePayload(
-      dataSetMessages: Vector[DataSetMessage] = Vector.empty
-    ) extends Payload
+      dataSetMessages: Vector[DataSetMessage] = Vector.empty) extends Payload
 
     case class DiscoveryRequestPayload() extends Payload
     case class DiscoveryResponsePayload(
-      dataSetMetaData: DataSetMetaData
-    ) extends Payload
+      dataSetMetaData: DataSetMetaData) extends Payload
     case class InvalidPayload() extends Payload
   }
 
@@ -45,18 +42,18 @@ object PayloadTypes {
   object DataSetMessageTypes {
     sealed trait DataSetMessageType
     case object DataSetMessageType {
-      case object KeyFrame   extends DataSetMessageType
+      case object KeyFrame extends DataSetMessageType
       case object DeltaFrame extends DataSetMessageType
-      case object Event      extends DataSetMessageType
-      case object KeepAlive  extends DataSetMessageType
+      case object Event extends DataSetMessageType
+      case object KeepAlive extends DataSetMessageType
     }
   }
 
   object DataSetFieldEncodings {
     sealed trait DataSetFieldEncoding
-    case object VariantFieldEncoding  extends DataSetFieldEncoding
-    case object RawFieldEncoding      extends DataSetFieldEncoding
-    case object ValueFieldEncoding    extends DataSetFieldEncoding
+    case object VariantFieldEncoding extends DataSetFieldEncoding
+    case object RawFieldEncoding extends DataSetFieldEncoding
+    case object ValueFieldEncoding extends DataSetFieldEncoding
     case object ReservedFieldEncoding extends DataSetFieldEncoding
   }
 
@@ -69,13 +66,11 @@ object PayloadTypes {
     statusEnabled: Boolean = false,
     cfgMajorVersionEnabled: Boolean = false,
     cfgMinorVersionEnabled: Boolean = false,
-    dataSetFlags2Enabled: Boolean = false
-  )
+    dataSetFlags2Enabled: Boolean = false)
   case class DataSetFlags2(
     dataSetMessageType: DataSetMessageType = KeyFrame,
     tsEnabled: Boolean = false,
-    picoSecondsIncluded: Boolean = false
-  )
+    picoSecondsIncluded: Boolean = false)
 
   case class DataSetMessageHeader(
     dataSetFlags1: DataSetFlags1,
@@ -85,35 +80,30 @@ object PayloadTypes {
     picoSeconds: Option[Int] = None,
     status: Option[Int] = None,
     configMajorVersion: Option[Int] = None,
-    configMinorVersion: Option[Int] = None
-  )
+    configMinorVersion: Option[Int] = None)
 
   sealed trait DataSetMessageFrame
   object DataSetMessageFrame {
-    case class DataSetMessageKeyFrame(
-
-    ) extends DataSetMessageFrame
+    case class DataSetMessageKeyFrame() extends DataSetMessageFrame
     case class DataSetMessageDeltaFrame() extends DataSetMessageFrame
     case class DataSetMessageEvent() extends DataSetMessageFrame
     case class DataSetMessageKeepAlive(
-      nextSequenceNumber: Int
-    ) extends DataSetMessageFrame
+      nextSequenceNumber: Int) extends DataSetMessageFrame
   }
 
   case class DataSetMessage(
     dataSetMessageHeader: DataSetMessageHeader,
-    messageFrame: DataSetMessageFrame
-  )
+    messageFrame: DataSetMessageFrame)
   // ******************************************* DataSetMessage  **************************************************** //
 
   // ******************************************* DataSetMetaData **************************************************** //
 
   sealed trait ValueRank { def value: Int }
-  case object OneDimension extends ValueRank {val value: Int = 1}
-  case object OneOrMoreDimensions extends ValueRank {val value: Int = 0}
-  case object Scalar extends ValueRank {val value: Int = -1}
-  case object Any extends ValueRank {val value: Int = -2}
-  case object ScalarOrOneDimension extends ValueRank {val value: Int = -3}
+  case object OneDimension extends ValueRank { val value: Int = 1 }
+  case object OneOrMoreDimensions extends ValueRank { val value: Int = 0 }
+  case object Scalar extends ValueRank { val value: Int = -1 }
+  case object Any extends ValueRank { val value: Int = -2 }
+  case object ScalarOrOneDimension extends ValueRank { val value: Int = -3 }
   object ValueRank {
     implicit val jsonFormat: OFormat[ValueRank] = derived.oformat[ValueRank]()
   }
@@ -134,8 +124,7 @@ object PayloadTypes {
     fields: Seq[FieldMetaData],
     dataSetClassId: UUID,
     configVersion: ConfigVersion,
-    status: StatusCode
-  )
+    status: StatusCode)
   object DataSetMetaData {
     implicit val jsonFormat: OFormat[DataSetMetaData] = derived.oformat[DataSetMetaData]()
   }
@@ -144,8 +133,7 @@ object PayloadTypes {
     namespaces: Vector[String] = Vector.empty,
     structureDataTypes: Vector[StructureDescription] = Vector.empty,
     enumDataTypes: Vector[EnumDescription] = Vector.empty,
-    simpleDataTypes: Vector[SimpleTypeDescription] = Vector.empty
-  )
+    simpleDataTypes: Vector[SimpleTypeDescription] = Vector.empty)
   object DataTypeSchemaHeader {
     implicit val jsonFormat: OFormat[DataTypeSchemaHeader] = derived.oformat[DataTypeSchemaHeader]()
   }
@@ -165,8 +153,7 @@ object PayloadTypes {
   case class StructureDescription(
     dataTypeId: NodeId,
     name: QualifiedName,
-    structureDefinition: StructureDefinition
-  )
+    structureDefinition: StructureDefinition)
   object StructureDescription {
     implicit val jsonFormat: OFormat[StructureDescription] = derived.oformat[StructureDescription]()
   }
@@ -175,8 +162,7 @@ object PayloadTypes {
     defaultEncodingId: NodeId,
     baseDataType: NodeId,
     structureType: StructureType,
-    fields: Vector[StructureField]
-  )
+    fields: Vector[StructureField])
   object StructureDefinition {
     implicit val jsonFormat: OFormat[StructureDefinition] = derived.oformat[StructureDefinition]()
   }
@@ -188,8 +174,7 @@ object PayloadTypes {
     valueRank: Int,
     arrayDimensions: Int,
     maxStringLength: Int,
-    sOptional: Boolean
-  )
+    sOptional: Boolean)
   object StructureField {
     implicit val jsonFormat: OFormat[StructureField] = derived.oformat[StructureField]()
   }
@@ -204,16 +189,14 @@ object PayloadTypes {
     arrayDimensions: Int,
     maxStringLength: Int,
     dataSetFieldId: UUID,
-    properties: Vector[KeyValueProperty]
-  )
+    properties: Vector[KeyValueProperty])
   object FieldMetaData {
     implicit val jsonFormat: OFormat[FieldMetaData] = derived.oformat[FieldMetaData]()
   }
 
   case class OptionSet(
     value: Vector[Byte],
-    validBits: Vector[Byte]
-  )
+    validBits: Vector[Byte])
   object OptionSet {
     implicit val jsonFormat: OFormat[OptionSet] = derived.oformat[OptionSet]()
   }
