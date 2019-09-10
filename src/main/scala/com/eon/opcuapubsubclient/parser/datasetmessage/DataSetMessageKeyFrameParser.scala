@@ -27,7 +27,7 @@ object DataSetMessageKeyFrameParser extends (ByteVector => DataSetMessageHeader 
         (Some(fldCnt), pos)
     }
 
-    // TODO: PublisherId need to be injected
+    // TODO: PublisherId need to be injected into the class so that we can do a look up for it!
 
     // Get the DataSetMetaData from the cache for the given PublisherId and ConfigVersion
     //val metaData = new SimpleDataSetMetaDataCache().get(dataSetMsgHeader.)
