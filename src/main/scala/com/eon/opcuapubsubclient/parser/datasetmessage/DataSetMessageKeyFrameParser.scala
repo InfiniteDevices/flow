@@ -26,6 +26,12 @@ object DataSetMessageKeyFrameParser extends (ByteVector => DataSetMessageHeader 
         (Some(fldCnt), pos)
     }
 
+    // Iterate over the fieldCound
 
+    // Get the FieldMetaData for the given fieldCount
+
+    // Get the StructureDataType from the DataSetMetaData and iterate over it
+
+    //
   }
 }

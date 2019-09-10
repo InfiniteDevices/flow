@@ -1,6 +1,5 @@
 package com.eon.opcuapubsubclient.parser
 
-import com.eon.opcuapubsubclient.config.OpcUAPubSubConfig
 import OpcUAPubSubParser._
 import com.eon.opcuapubsubclient._
 import com.eon.opcuapubsubclient.domain.HeaderTypes.{GroupHeader, SecurityHeader}
@@ -8,9 +7,8 @@ import scodec.bits.ByteVector
 
 /**
   * TODO: Scaladoc
-  * @param config The configuration representing the underlying OPC UA PubSub broker
   */
-class OpcUAPubSubParser(config: OpcUAPubSubConfig) {
+class OpcUAPubSubParser {
 
   def parse(bytes: Seq[Byte]): Unit = {
     val byteVector = ByteVector(bytes)
@@ -68,6 +66,5 @@ object OpcUAPubSubParser {
   type ParsePosition = Int
   val startParsePosition: ParsePosition = 0
 
-  def apply(opcUAPubSubConfig: OpcUAPubSubConfig) =
-    new OpcUAPubSubParser(opcUAPubSubConfig)
+  def apply = new OpcUAPubSubParser()
 }

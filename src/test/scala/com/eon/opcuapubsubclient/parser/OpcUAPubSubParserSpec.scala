@@ -13,7 +13,7 @@ class OpcUAPubSubParserSpec extends UnitSpec with BeforeAndAfterAll {
   private val byteVector = TestData.meta.asByteVector
 
   //val knownPublisherIds = appCfg.opcCfg.publisherIds
-  val parser = OpcUAPubSubParser(appCfg.opcCfg)
+  val parser = OpcUAPubSubParser
 
   "it" should "parse the OPCUAPubSub dataset successfully" in {
     val seq = meta.split(" ")
