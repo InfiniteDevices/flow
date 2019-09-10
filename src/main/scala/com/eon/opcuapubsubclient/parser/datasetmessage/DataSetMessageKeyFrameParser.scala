@@ -1,5 +1,6 @@
 package com.eon.opcuapubsubclient.parser.datasetmessage
 
+import com.eon.opcuapubsubclient.cache._
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetFieldEncodings.RawFieldEncoding
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame.DataSetMessageKeyFrame
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageHeader
@@ -26,7 +27,12 @@ object DataSetMessageKeyFrameParser extends (ByteVector => DataSetMessageHeader 
         (Some(fldCnt), pos)
     }
 
-    // Iterate over the fieldCound
+    // TODO: PublisherId need to be injected
+
+    // Get the DataSetMetaData from the cache for the given PublisherId and ConfigVersion
+    //val metaData = new SimpleDataSetMetaDataCache().get(dataSetMsgHeader.)
+
+    // Iterate over the fieldCount
 
     // Get the FieldMetaData for the given fieldCount
 

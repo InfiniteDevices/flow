@@ -50,10 +50,21 @@ object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataS
   }
 
   /**
+<<<<<<< Updated upstream
    * Spec on Page 70 says that the DataSetFlags2 shall be omitted if bit 7 of the DataSetFlags1 is false
    * If the field is omitted, the Subscriber shall handle the related bits as false
    * Asked this as a question in the OPC Discussion Forum!
    * https://opcfoundation.org/forum/opc-ua-standard/datasetmessage-header-parsing-understanding-the-meaning-from-spec/#p1930
+=======
+   * OPC UA PubSub Part 14, Version 1.04Spec on Page 70 says that the DataSetFlags2
+   * shall be omitted if bit 7 of the DataSetFlags1 is false!
+   *
+   * If the field is omitted, the Subscriber shall handle the related bits as false
+   *
+   * Asked this as a question in the OPC Discussion Forum!
+   * https://opcfoundation.org/forum/opc-ua-standard/datasetmessage-header-parsing-understanding-the-meaning-from-spec/#p1930
+   *
+>>>>>>> Stashed changes
    * If this field is omitted, then it means that there is no byte representing the DataSetFlags2 at all.
    * So we return a default value!
    */
