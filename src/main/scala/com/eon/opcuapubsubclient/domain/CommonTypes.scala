@@ -82,16 +82,17 @@ object CommonTypes {
     implicit val jsonFormat: OFormat[QualifiedName] = derived.oformat[QualifiedName]()
   }
 
-  sealed trait NodeIdIdentifier
+  sealed trait NodeIdIdentifier {
+    val value: Any
+    def asString: String = value.toString
+  }
   case class NumericTwoByteIdentifier(value: Byte) extends NodeIdIdentifier
   case class NumericFourByteIdentifier(value: Short) extends NodeIdIdentifier
   case class NumericIdentifier(value: Int) extends NodeIdIdentifier
   case class StringIdentifier(value: String) extends NodeIdIdentifier
-  case class GuidIdentifier(value: UUID) extends NodeIdIdentifier
   case class OpaqueIdentifier(value: Vector[Byte]) extends NodeIdIdentifier
-  case object UnknownIdentifier extends NodeIdIdentifier {
-    override def toString: String = this.productPrefix
-  }
+  case class GuidIdentifier(value: UUID) extends NodeIdIdentifier
+  case class UnknownIdentifier(value: String) extends NodeIdIdentifier
   object NodeIdIdentifier {
     implicit val jsonFormat: OFormat[NodeIdIdentifier] = derived.oformat[NodeIdIdentifier]()
   }

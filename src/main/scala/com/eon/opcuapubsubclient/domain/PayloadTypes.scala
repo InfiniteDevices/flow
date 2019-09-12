@@ -79,8 +79,7 @@ object PayloadTypes {
     timeStamp: Option[Long] = None,
     picoSeconds: Option[Int] = None,
     status: Option[Int] = None,
-    configMajorVersion: Option[Int] = None,
-    configMinorVersion: Option[Int] = None)
+    configVersion: ConfigVersion)
 
   sealed trait DataSetMessageFrame
   object DataSetMessageFrame {
