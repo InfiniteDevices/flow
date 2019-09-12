@@ -17,7 +17,7 @@ trait DataSetMetaDataCache {
  * Simple object cache
  * TODO: Implement this cache
  */
-class SimpleDataSetMetaDataCache extends DataSetMetaDataCache {
+object SimpleDataSetMetaDataCache extends DataSetMetaDataCache {
   override def evict(key: PublisherID): Unit = ???
 
   override def add(key: PublisherID, value: DataSetMetaData): Unit = ???

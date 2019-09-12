@@ -1,7 +1,7 @@
 package com.eon.opcuapubsubclient.parser.datasetmessage
 
 import com.eon.opcuapubsubclient.cache._
-import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetFieldEncodings.RawFieldEncoding
+import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetFieldEncodings.{RawFieldEncoding, ReservedFieldEncoding, ValueFieldEncoding, VariantFieldEncoding}
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageFrame.DataSetMessageKeyFrame
 import com.eon.opcuapubsubclient.domain.PayloadTypes.DataSetMessageHeader
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
@@ -27,10 +27,25 @@ object DataSetMessageKeyFrameParser extends (ByteVector => DataSetMessageHeader 
         (Some(fldCnt), pos)
     }
 
+    // Depending on the field encoding, we need to parse the payload
+    dataSetMsgHeader.dataSetFlags1.dataSetFieldEncoding match {
+      case VariantFieldEncoding =>
+        parseVariant
+      case RawFieldEncoding =>
+        // Here we know that parsing needs a DataSetMetaData, so let us get it from the Cache
+        // TODO: The key to look up the Map should also contain the PublisherId, Right now it is not yet injected
+        // val key = s"$publisherId-${dataSetMsgHeader.configVersion.majorVersion}-${dataSetMsgHeader.configVersion.minorVersion}"
+        val key = s"${dataSetMsgHeader.configVersion.majorVersion}-${dataSetMsgHeader.configVersion.minorVersion}"
+        val dataSetMetaData = SimpleDataSetMetaDataCache.get(key)
+        parseRawFields(dataSetMetaData, dataSetMetaData.fields.length)
+      case ValueFieldEncoding =>
+      case ReservedFieldEncoding =>
+
+    }
+
     // TODO: PublisherId need to be injected into the class so that we can do a look up for it!
 
     // Get the DataSetMetaData from the cache for the given PublisherId and ConfigVersion
-    //val metaData = new SimpleDataSetMetaDataCache().get(dataSetMsgHeader.)
 
     // Iterate over the fieldCount
 
