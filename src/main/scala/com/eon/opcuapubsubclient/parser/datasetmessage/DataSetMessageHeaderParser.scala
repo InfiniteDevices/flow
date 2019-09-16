@@ -29,7 +29,7 @@ object DataSetMessageHeaderParser extends (ByteVector => ParsePosition => (DataS
       timeStamp,
       picoSeconds,
       status,
-      ConfigVersion(majorCfgVersion.getOrElse(0), minorCfgVersion.getOrElse(0))), pos8)
+      ConfigVersion(majorCfgVersion.map(_.toLong).getOrElse(0), minorCfgVersion.map(_.toLong).getOrElse(0))), pos8)
   }
 
   def dataSetFlag1(bitV: BitVector, from: ParsePosition): (DataSetFlags1, ParsePosition) = {

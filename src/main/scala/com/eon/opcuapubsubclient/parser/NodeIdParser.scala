@@ -66,10 +66,8 @@ object NodeIdParser extends (ByteVector => ParsePosition => (NodeId, ParsePositi
           (NodeId(
             namespaceIndex = defaultNsIndex,
             OpaqueIdentifier(value = byteStr)), parsePosition + pos1)
-        case _ =>
-          (NodeId(
-            0, // This does not matter as anyway the NodeId is invalid!
-            UnknownIdentifier), parsePosition)
+        case _ => // This does not matter as anyway the NodeId is invalid!
+          (NodeId(0, UnknownIdentifier("Invalid NodeId identifier")), parsePosition)
       }
     }
 
