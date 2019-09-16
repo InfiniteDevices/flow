@@ -37,7 +37,7 @@ object DataSetMessageKeyFrameParser extends (ByteVector => DataSetMessageHeader 
         // val key = s"$publisherId-${dataSetMsgHeader.configVersion.majorVersion}-${dataSetMsgHeader.configVersion.minorVersion}"
         val key = s"${dataSetMsgHeader.configVersion.majorVersion}-${dataSetMsgHeader.configVersion.minorVersion}"
         val dataSetMetaData = SimpleDataSetMetaDataCache.get(key)
-        parseRawFields(dataSetMetaData, dataSetMetaData.fields.length)
+        parseRawFields(dataSetMetaData, dataSetMetaData.fields.length, byteVector, parsePosition)
       case ValueFieldEncoding =>
       case ReservedFieldEncoding =>
 
