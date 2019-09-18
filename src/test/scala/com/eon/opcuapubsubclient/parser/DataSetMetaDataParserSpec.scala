@@ -9,7 +9,7 @@ import com.eon.opcuapubsubclient.parser.datasetmetadata.DataSetMetaDataParser
 import org.scalatest.BeforeAndAfterAll
 import scodec.bits.ByteVector
 import play.api.libs.json._
-import julienrf.json.derived
+
 
 // TODO: Fully implement this as a test
 class DataSetMetaDataParserSpec extends UnitSpec with BeforeAndAfterAll {

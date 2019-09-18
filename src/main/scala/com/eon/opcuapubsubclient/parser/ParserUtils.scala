@@ -6,8 +6,8 @@ import java.util.UUID
 import com.eon.opcuapubsubclient.domain.CommonTypes._
 import com.eon.opcuapubsubclient.domain.HeaderTypes._
 import com.eon.opcuapubsubclient.parser.OpcUAPubSubParser.ParsePosition
-import scodec.bits.ByteOrdering.{ BigEndian, LittleEndian }
-import scodec.bits.{ BitVector, ByteVector }
+import scodec.bits.ByteOrdering.{BigEndian, LittleEndian}
+import scodec.bits.{BitVector, ByteOrdering, ByteVector}
 
 import scala.annotation.tailrec
 
@@ -52,8 +52,8 @@ object ParserUtils {
     (slice(byteVector, from, from + 8).toLong(ordering = LittleEndian), from + 8)
   }
 
-  def parseUInt64(byteVector: ByteVector, from: ParsePosition): (Long, ParsePosition) = {
-    (slice(byteVector, from, from + 8).toLong(signed = false, ordering = LittleEndian), from + 8)
+  def parseUInt64(byteVector: ByteVector, from: ParsePosition, ordering: ByteOrdering = LittleEndian): (Long, ParsePosition) = {
+    (slice(byteVector, from, from + 8).toLong(signed = false, ordering), from + 8)
   }
 
   def parseFloat(byteVector: ByteVector, from: ParsePosition): (Float, ParsePosition) = {
@@ -97,12 +97,14 @@ object ParserUtils {
 
   // TODO: Test if this works correctly!
   def parseGuid(byteVector: ByteVector, pos: ParsePosition): (UUID, ParsePosition) = {
+
     val (part1, pos1) = parseUInt32(byteVector, pos) // 4 bytes
-    val (part2, pos2) = (byteVector.slice(from = pos1, until = pos1 + 2).toShort(signed = false, ordering = LittleEndian), pos1 + 2) // 2 bytes
-    val (part3, pos3) = (byteVector.slice(from = pos2, until = pos2 + 2).toShort(signed = false, ordering = LittleEndian), pos2 + 2) // 2 bytes
-    val (part4, _) = (byteVector.slice(from = pos3, until = pos3 + 8).toLong(signed = false, ordering = BigEndian), pos3 + 8) // 8 bytes intentionally Big Endian
+    val (part2, pos2) = parseUInt16(byteVector, pos1) // 2 bytes
+    val (part3, pos3) = parseUInt16(byteVector, pos2) // 2 bytes
+    val (part4, _) = parseUInt64(byteVector, pos3, BigEndian) // 8 bytes intentionally Big Endian
     val msb = (part1 << 32) | (part2 << 16) | part3
-    (new UUID(msb, part4), pos + 16) // GUID is always 16 bytes long as per the Spec
+    val uuid = new UUID(msb, part4)
+    (uuid, pos + 16) // GUID is always 16 bytes long as per the Spec
   }
 
   def parseByteString(byteVector: ByteVector, from: ParsePosition): (Vector[Byte], ParsePosition) = {
